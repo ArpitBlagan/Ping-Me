@@ -1,0 +1,53 @@
+import { ModeToggle } from "./mode-toggle";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { Button } from "./ui/button";
+import { contextt } from "@/Contextt";
+const Navbar = () => {
+  const value = useContext(contextt);
+  console.log(value);
+  return (
+    <div className="flex items-center border border-gray-600 rounded-xl py-2 px-4">
+      <div className="flex-1 text-[26px] bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text">
+        <Link to="/">Texting-App</Link>
+      </div>
+      <div className="flex items-center justify-end gap-5">
+        {value?.info.isloggedIn ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <p className="cursor-pointer">Profile</p>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuItem>{value.info.name}</DropdownMenuItem>
+              <DropdownMenuItem>
+                <span className="text-gray-700">{value.info.email}</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/chat">TextArea</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Button>Logout</Button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="flex gap-4 items-center">
+            <Link to="/signin">SignUp</Link>
+            <Link to="/signup">SignIn</Link>
+          </div>
+        )}
+        <ModeToggle />
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;

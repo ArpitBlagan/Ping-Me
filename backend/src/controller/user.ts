@@ -1,0 +1,137 @@
+import { Request, Response } from "express";
+import { userModel } from "../model/user";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import * as z from "zod";
+import mongoose from "mongoose";
+const registerSchema = z.object({
+  name: z.string(),
+  email: z.string().email(""),
+  password: z.string().min(6, "password should be atleast 6 characters long"),
+  image: z.string().optional(),
+});
+
+export const logout = async (req: Request, res: Response) => {
+  res.cookie("token", "", { sameSite: "none", httpOnly: true, secure: true });
+  res.status(200).json({ message: "logged out successfully" });
+};
+
+export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  try {
+    const user = await userModel.findOne({ email: email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "user with this email not found" });
+    }
+    //@ts-ignore
+    const pass: string = user.password;
+    if (await bcrypt.compare(password, pass)) {
+      const token = jwt.sign(
+        {
+          user: {
+            id: user._id,
+            email: user.email,
+            name: user.name,
+          },
+        },
+        process.env.SECRET as string
+      );
+      res.cookie("token", token, {
+        sameSite: "none",
+        httpOnly: true,
+        secure: true,
+      });
+      res.status(200).json({
+        id: user._id,
+        email: user.email,
+        name: user.name,
+      });
+    } else {
+      res.status(401).json({ message: "wrong email and password pair" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
+
+export const register = async (req: Request, res: Response) => {
+  const body = req.body;
+  const data = registerSchema.safeParse(body);
+  if (!data.success) {
+    return res.status(400).json({ message: "Invalid inputs" });
+  }
+  try {
+    const user = await userModel.findOne({ email: body.email });
+    console.log("user", user);
+    if (!user) {
+      const pass = await bcrypt.hash(body.password, 10);
+      const val = await userModel.create({
+        name: body.name,
+        email: body.email,
+        password: pass,
+        friends: [],
+      });
+      return res.status(202).json({ user: val });
+    } else {
+      return res.status(409).json({ message: "email already registered" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
+
+export const addFriend = async (req: Request, res: Response) => {
+  const { id } = req.body;
+  const userId = req.user.id;
+  console.log("add friend", id, userId);
+  const session = mongoose.startSession();
+  (await session).startTransaction();
+  try {
+    await userModel.findByIdAndUpdate(userId, {
+      $push: {
+        friends: id,
+      },
+    });
+    await userModel.findByIdAndUpdate(id, {
+      $push: {
+        friends: userId,
+      },
+    });
+    (await session).commitTransaction();
+    (await session).endSession();
+    res.status(202).json({ message: "friend added successfully" });
+  } catch (err) {
+    (await session).abortTransaction();
+    (await session).endSession();
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
+
+export const getFriends = async (req: Request, res: Response) => {
+  const userId = req.user.id;
+  try {
+    const user = await userModel.findById(userId).populate("friends");
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
+
+export const searchUser = async (req: Request, res: Response) => {
+  const userId = req.user.id;
+  const { text } = req.query;
+
+  const regex = new RegExp("^" + text, "i");
+
+  try {
+    const data = await userModel.find({
+      $or: [{ email: { $regex: regex } }, { name: { $regex: regex } }],
+    });
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json({ message: "something went wrong" });
+  }
+};

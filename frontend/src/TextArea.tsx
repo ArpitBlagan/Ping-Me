@@ -1,0 +1,546 @@
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "./components/ui/button";
+import { useEffect, useRef, useState } from "react";
+import { Input } from "./components/ui/input";
+import { Triangle } from "react-loader-spinner";
+import { useContext } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { contextt } from "./Contextt";
+import { ArrowLeft } from "lucide-react";
+import EmojiPicker from "emoji-picker-react";
+import uuid from "react-uuid";
+const TextArea = () => {
+  const value = useContext(contextt);
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
+  const [friends, setFriends] = useState([]);
+  const [list, setList] = useState([]);
+  const [addL, setAddL] = useState(false);
+  const [searchL, setSearchL] = useState(false);
+  const [sele, setSele] = useState<any | null>(null);
+  const [frndL, setFrndL] = useState(false);
+  const [socket, setSocket] = useState<null | WebSocket>(null);
+  const [online, setOnline] = useState([]);
+  const [message, setMessage] = useState("");
+  const [conversation, setConv] = useState<any[]>([]);
+  const [refetch, setRefetch] = useState(false);
+  const scrollRef = useRef(null);
+  const seleId = useRef(null);
+  const scrollRef2 = useRef(null);
+  const [emojiOpen, setEmojiOpne] = useState(false);
+
+  useEffect(() => {
+    console.log(value?.info);
+    let sock: WebSocket;
+    if (value?.info.email) {
+      sock = new WebSocket(`ws://localhost:8000?email=${value?.info.email}`);
+      setSocket(sock);
+      sock.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        if (message.type == "text") {
+          if (seleId.current == message.by) {
+            setConv((prev) => {
+              return [
+                ...prev,
+                { id: message.id, by: { _id: message.by }, text: message.text },
+              ];
+            });
+          }
+        } else if (message.type == "online user") {
+          setOnline(message.list);
+        } else if (message.type == "refetch") {
+          setRefetch(!refetch);
+        } else if (message.type == "saved") {
+          // const uu = message.uu;
+          // const id = message.id;
+          // console.log(conversation);
+        }
+      };
+      // sock.addEventListener("message", (value) => {
+      //   const message = JSON.parse(value.data);
+      //   if (message.type == "text") {
+      //     console.log(message, sele);
+      //     if (sele.id == message.by) {
+      //       setConv((prev) => {
+      //         return [
+      //           ...prev,
+      //           { id: message.id, by: { _id: message.by }, text: message.text },
+      //         ];
+      //       });
+      //     }
+      //   } else if (message.type == "online user") {
+      //     setOnline(message.list);
+      //   } else if (message.type == "refetch") {
+      //     setRefetch(!refetch);
+      //   }
+      // });
+    }
+    return () => {
+      sock?.close();
+    };
+  }, [value]);
+
+  useEffect(() => {
+    if (scrollRef && scrollRef.current) {
+      console.log("working");
+      //@ts-ignore
+      scrollRef.current?.scrollIntoView({
+        block: "end",
+        inline: "nearest",
+      });
+    }
+    if (scrollRef2 && scrollRef2.current) {
+      console.log("working");
+      //@ts-ignore
+      scrollRef2.current?.scrollIntoView({
+        block: "end",
+        inline: "nearest",
+      });
+    }
+  }, [conversation]);
+  useEffect(() => {
+    const getConv = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8000/api/conversation?to=${sele.id}`,
+          {
+            withCredentials: true,
+          }
+        );
+        console.log(res.data);
+        setConv(res.data.messages);
+      } catch (err) {
+        toast.error("something went wrong while fetching chat history :( !");
+      }
+    };
+    if (sele) {
+      getConv();
+    }
+  }, [sele]);
+  useEffect(() => {
+    const getData = async () => {
+      if (friends.length == 0) {
+        setFrndL(true);
+      }
+      try {
+        const res = await axios.get("http://localhost:8000/api/friends", {
+          withCredentials: true,
+        });
+        console.log(res.data);
+        setFriends(res.data.friends);
+        setFrndL(false);
+      } catch (err) {
+        setFrndL(false);
+        toast.error("something went wrong while fetching friends list :( !");
+      }
+    };
+    getData();
+  }, [refetch]);
+  useEffect(() => {
+    const getRes = async () => {
+      setSearchL(true);
+      console.log("sending search req");
+      try {
+        const res = await axios.get(
+          `http://localhost:8000/api/search?text=${text}`,
+          {
+            withCredentials: true,
+          }
+        );
+        setList(res.data);
+        setSearchL(false);
+      } catch (err) {
+        setSearchL(false);
+      }
+    };
+    console.log("text changed");
+    let tt = setTimeout(() => {
+      getRes();
+    }, 1000);
+    return () => {
+      clearTimeout(tt);
+    };
+  }, [text]);
+  return (
+    <div className=" my-4 flex flex-col gap-3">
+      <div className="flex items-center justify-end">
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild className="cursor-pointer">
+            <Button className="w-[160px] bg-green-600">Add+</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                <Input
+                  className="my-4"
+                  placeholder="arpit@gmail.com"
+                  value={text}
+                  onChange={(e) => {
+                    setText(e.target.value);
+                  }}
+                />
+              </DialogTitle>
+              <DialogDescription>
+                <div className="overflow-hidden overflow-y-scroll flex flex-col gap-3">
+                  {searchL ? (
+                    <div className="flex items-center justify-center">
+                      <Triangle />
+                    </div>
+                  ) : (
+                    list.map((ele: any, index: any) => {
+                      let ok = friends.find((elee: any) => {
+                        return ele.email == elee.email;
+                      });
+                      //@ts-ignore
+                      if (ele._id != value?.info.id && !ok) {
+                        return (
+                          <div
+                            className="flex items-center justify-around border rounded-xl py-2 px-4"
+                            key={index}
+                          >
+                            <p>{ele.name}</p>
+                            <p>{ele.email}</p>
+                            <Button
+                              disabled={addL}
+                              onClick={async (e) => {
+                                e.preventDefault();
+                                const body = { id: ele._id };
+                                setAddL(true);
+                                try {
+                                  await axios.patch(
+                                    "http://localhost:8000/api/addFriend",
+                                    body,
+                                    { withCredentials: true }
+                                  );
+                                  toast.success(
+                                    "friend added successfully :) !"
+                                  );
+                                  setRefetch(!refetch);
+                                  setAddL(false);
+                                  setOpen(false);
+                                } catch (err) {
+                                  toast.error("error while adding friend :( !");
+                                  setAddL(false);
+                                }
+                              }}
+                            >
+                              {addL ? "Adding" : "Add"}
+                            </Button>
+                          </div>
+                        );
+                      }
+                    })
+                  )}
+                  {list.length == 0 && <div>No Match</div>}
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div className="min-h-[80dvh] flex gap-3">
+        <div className=" hidden md:block flex flex-col gap-2">
+          {frndL ? (
+            <div className="flex items-center justify-center h-full">
+              <Triangle />
+            </div>
+          ) : (
+            friends.map((ele: any) => {
+              return (
+                <div
+                  className="border rounded-xl py-2 px-4 cursor-pointer"
+                  key={ele._id}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setSele({ id: ele._id, name: ele.name, email: ele.email });
+                    seleId.current = ele._id;
+                    setMessage("");
+                    setConv([]);
+                  }}
+                >
+                  <p className="text-2xl">{ele.name}</p>
+                  <p className="text-gray-600">{ele.email}</p>
+                </div>
+              );
+            })
+          )}
+        </div>
+        <div className="hidden md:block flex-1 border border-l-gray-600 rounded-xl py-2 px-4 ">
+          {sele && sele.id ? (
+            <div className="flex flex-col gap-2 h-full">
+              <div className="flex flex-col gap-2 items-end justify-center">
+                <div className="flex gap-2 items-center">
+                  <p className="text-2xl">{sele.name}</p>
+                  <p className="text-gray-600">{sele.email}</p>
+                </div>
+                <p>
+                  {/* @ts-ignore */}
+                  {online.includes(sele.email) ? (
+                    <span className="text-green-600">online</span>
+                  ) : (
+                    <span className="text-gray-600">offline</span>
+                  )}
+                </p>
+              </div>
+              <div className="h-[60dvh] overflow-hidden overflow-y-auto py-2 px-4 relative">
+                {conversation.map((ele: any, index: any) => {
+                  return (
+                    <div
+                      key={index}
+                      className={`flex ${
+                        ele.by._id == value?.info.id
+                          ? "justify-end"
+                          : "justify-start"
+                      } mb-4`}
+                    >
+                      <div
+                        className={`max-w-xs break-words ${
+                          ele.by._id == value?.info.id
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-300 text-black"
+                        } p-3 rounded-lg`}
+                      >
+                        {ele.text}
+                      </div>
+                    </div>
+                  );
+                })}
+                <div ref={scrollRef} />
+                <EmojiPicker
+                  className="absolute  mt-10"
+                  open={emojiOpen}
+                  onEmojiClick={(emojiObject) => {
+                    setMessage((prev) => {
+                      return prev + emojiObject.emoji;
+                    });
+                  }}
+                />
+                <div ref={scrollRef} />
+              </div>
+              <div className="flex items-center gap-3">
+                <Input
+                  placeholder="enter text :) !"
+                  className="flex-1 py-4 px-4 h-[50px]"
+                  value={message}
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                  }}
+                />
+
+                <Button
+                  className="bg-green-500"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const uu = uuid();
+                    const body = JSON.stringify({
+                      type: "text",
+                      kind: "text",
+                      text: message,
+                      by: value?.info.id,
+                      senderEmail: value?.info.email,
+                      to: sele.id,
+                      receiverEmail: sele.email,
+                      uu,
+                    });
+                    socket?.send(body);
+                    setConv((prev) => {
+                      return [
+                        ...prev,
+                        {
+                          by: { _id: value?.info.id },
+                          type: "text",
+                          text: message,
+                          uu,
+                        },
+                      ];
+                    });
+                    setMessage("");
+                    setEmojiOpne(false);
+                  }}
+                >
+                  send
+                </Button>
+              </div>
+
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setEmojiOpne(!emojiOpen);
+                  //@ts-ignore
+                  scrollRef.current?.scrollIntoView();
+                }}
+              >
+                {emojiOpen ? "close" : "Emoji 🚀"}
+              </Button>
+            </div>
+          ) : (
+            <div className="flex justify-center items-center ">
+              Chatting-App
+            </div>
+          )}
+        </div>
+        {sele ? (
+          <div className="md:hidden w-full">
+            <div className="flex flex-col gap-2 h-full w-full">
+              <div className="flex border py-2 px-3 rounded-xl">
+                <div className="flex justify-between gap-2 w-full">
+                  <div className="flex justify-start items-center">
+                    <ArrowLeft
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setSele(null);
+                        seleId.current = null;
+                      }}
+                    />
+                  </div>
+                  <div className="flex flex-col items-end justify-center gap-2">
+                    <div className="flex items-center gap-3">
+                      <p className="text-2xl">{sele.name}</p>
+                      <p className="text-gray-600">{sele.email}</p>
+                    </div>
+                    <p>
+                      {/* @ts-ignore */}
+                      {online.includes(sele.email) ? (
+                        <span className="text-green-600">online</span>
+                      ) : (
+                        <span className="text-gray-600">offline</span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="h-[60dvh] overflow-hidden overflow-y-auto py-2 px-4 relative">
+                {conversation.map((ele: any, index: any) => {
+                  return (
+                    <div
+                      key={index}
+                      className={`flex ${
+                        ele.by._id == value?.info.id
+                          ? "justify-end"
+                          : "justify-start"
+                      } mb-4`}
+                    >
+                      <div
+                        className={`max-w-xs break-words ${
+                          ele.by._id == value?.info.id
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-300 text-black"
+                        } p-3 rounded-lg`}
+                      >
+                        {ele.text}
+                      </div>
+                    </div>
+                  );
+                })}
+                <EmojiPicker
+                  className="absolute  mt-10"
+                  open={emojiOpen}
+                  onEmojiClick={(emojiObject) => {
+                    setMessage((prev) => {
+                      return prev + emojiObject.emoji;
+                    });
+                  }}
+                />
+                <div ref={scrollRef2} />
+              </div>
+              <div className="flex items-center gap-3">
+                <Input
+                  placeholder="enter text :) !"
+                  className="flex-1 py-4 px-4 h-[50px]"
+                  value={message}
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                  }}
+                />
+                <Button
+                  className="bg-green-500"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const uu = uuid();
+                    const body = JSON.stringify({
+                      type: "text",
+                      kind: "text",
+                      text: message,
+                      by: value?.info.id,
+                      senderEmail: value?.info.email,
+                      to: sele.id,
+                      receiverEmail: sele.email,
+                      uu,
+                    });
+                    socket?.send(body);
+                    setConv((prev) => {
+                      return [
+                        ...prev,
+                        {
+                          by: { _id: value?.info.id },
+                          type: "text",
+                          text: message,
+                          uu,
+                        },
+                      ];
+                    });
+                    setMessage("");
+                    setEmojiOpne(false);
+                  }}
+                >
+                  send
+                </Button>
+              </div>
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setEmojiOpne(!emojiOpen);
+                  //@ts-ignore
+                  scrollRef.current?.scrollIntoView();
+                }}
+              >
+                {emojiOpen ? "close" : "Emoji 🚀"}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="md:hidden w-full">
+            {frndL ? (
+              <div className="flex items-center justify-center h-full">
+                <Triangle />
+              </div>
+            ) : (
+              friends.map((ele: any) => {
+                return (
+                  <div
+                    className="border rounded-xl py-2 px-4 cursor-pointer"
+                    key={ele._id}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setSele({
+                        id: ele._id,
+                        name: ele.name,
+                        email: ele.email,
+                      });
+                      seleId.current = ele._id;
+                      setMessage("");
+                      setConv([]);
+                    }}
+                  >
+                    <p className="text-2xl">{ele.name}</p>
+                    <p className="text-gray-600">{ele.email}</p>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default TextArea;
