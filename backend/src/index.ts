@@ -17,9 +17,8 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "*",
       "http://localhost:5173",
-      "https://chat-assignment-lyart.vercel.app/",
+      "https://chat-assignment-lyart.vercel.app",
     ],
     credentials: true,
   })
