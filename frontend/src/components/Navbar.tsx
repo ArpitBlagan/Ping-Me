@@ -34,7 +34,19 @@ const Navbar = () => {
                 <Link to="/chat">TextArea</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Button>Logout</Button>
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    value.setInfo({
+                      isloggedIn: false,
+                      name: "",
+                      email: "",
+                      id: "",
+                    });
+                  }}
+                >
+                  Logout
+                </Button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

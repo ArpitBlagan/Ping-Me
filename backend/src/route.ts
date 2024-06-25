@@ -6,6 +6,7 @@ import {
   addFriend,
   getFriends,
   searchUser,
+  logout,
 } from "./controller/user";
 import { validateToken } from "./middleware";
 
@@ -13,6 +14,7 @@ export const router = Router();
 
 router.route("/login").post(login);
 router.route("/register").post(register);
+router.route("/logout").get(logout);
 router.use(validateToken);
 router.route("/friends").get(getFriends);
 router.route("/search").get(searchUser);
