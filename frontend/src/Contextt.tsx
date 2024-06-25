@@ -24,9 +24,12 @@ const Contextt = ({ children }: { children: React.ReactNode }) => {
     const getInfo = async () => {
       console.log("checking user token");
       try {
-        const res = await axios.get("http://localhost:8000/api/isloggedin", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          "https://chat-assignment-qrb7.onrender.com/api/isloggedin",
+          {
+            withCredentials: true,
+          }
+        );
         setInfo({
           isloggedIn: true,
           name: res.data.name,

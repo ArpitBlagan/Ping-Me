@@ -34,9 +34,13 @@ const SignUp = () => {
         email: data.email,
         password: data.password,
       };
-      const res = await axios.post("http://localhost:8000/api/register", body, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "https://chat-assignment-qrb7.onrender.com/api/register",
+        body,
+        {
+          withCredentials: true,
+        }
+      );
       console.log(res.data);
       toast.success("Signined up successfully");
       setLoading(false);

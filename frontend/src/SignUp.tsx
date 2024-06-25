@@ -34,9 +34,13 @@ const SignIn = () => {
         email: data.email,
         password: data.password,
       };
-      const res = await axios.post("http://localhost:8000/api/login", body, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "https://chat-assignment-qrb7.onrender.com/api/login",
+        body,
+        {
+          withCredentials: true,
+        }
+      );
       console.log(res.data);
       value?.setInfo({
         isloggedIn: true,

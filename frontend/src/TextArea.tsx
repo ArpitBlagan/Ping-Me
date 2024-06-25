@@ -41,7 +41,9 @@ const TextArea = () => {
     console.log(value?.info);
     let sock: WebSocket;
     if (value?.info.email) {
-      sock = new WebSocket(`ws://localhost:8000?email=${value?.info.email}`);
+      sock = new WebSocket(
+        `wss://chat-assignment-qrb7.onrender.com?email=${value?.info.email}`
+      );
       setSocket(sock);
       sock.onmessage = (event) => {
         const message = JSON.parse(event.data);
@@ -110,7 +112,7 @@ const TextArea = () => {
     const getConv = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/conversation?to=${sele.id}`,
+          `https://chat-assignment-qrb7.onrender.com/api/conversation?to=${sele.id}`,
           {
             withCredentials: true,
           }
@@ -131,9 +133,12 @@ const TextArea = () => {
         setFrndL(true);
       }
       try {
-        const res = await axios.get("http://localhost:8000/api/friends", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          "https://chat-assignment-qrb7.onrender.com/api/friends",
+          {
+            withCredentials: true,
+          }
+        );
         console.log(res.data);
         setFriends(res.data.friends);
         setFrndL(false);
@@ -150,7 +155,7 @@ const TextArea = () => {
       console.log("sending search req");
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/search?text=${text}`,
+          `https://chat-assignment-qrb7.onrender.com/api/search?text=${text}`,
           {
             withCredentials: true,
           }
@@ -216,7 +221,7 @@ const TextArea = () => {
                                 setAddL(true);
                                 try {
                                   await axios.patch(
-                                    "http://localhost:8000/api/addFriend",
+                                    "https://chat-assignment-qrb7.onrender.com/api/addFriend",
                                     body,
                                     { withCredentials: true }
                                   );
