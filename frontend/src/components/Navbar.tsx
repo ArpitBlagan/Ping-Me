@@ -10,7 +10,11 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { Button } from "./ui/button";
 import { contextt } from "@/Contextt";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const Navbar = () => {
+  const navigate = useNavigate();
   const value = useContext(contextt);
   console.log(value);
   return (
@@ -35,14 +39,24 @@ const Navbar = () => {
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Button
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.preventDefault();
-                    value.setInfo({
-                      isloggedIn: false,
-                      name: "",
-                      email: "",
-                      id: "",
-                    });
+                    try {
+                      const res = await axios.get(
+                        "https://chat-assignment-qrb7.onrender.com/api/logout",
+                        { withCredentials: true }
+                      );
+                      console.log(res.data);
+                      value.setInfo({
+                        isloggedIn: false,
+                        name: "",
+                        email: "",
+                        id: "",
+                      });
+                      navigate("/signin");
+                    } catch (err) {
+                      toast.error("");
+                    }
                   }}
                 >
                   Logout

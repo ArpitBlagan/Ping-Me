@@ -8,6 +8,7 @@ const middleware_1 = require("./middleware");
 exports.router = (0, express_1.Router)();
 exports.router.route("/login").post(user_1.login);
 exports.router.route("/register").post(user_1.register);
+exports.router.route("/logout").get(user_1.logout);
 exports.router.use(middleware_1.validateToken);
 exports.router.route("/friends").get(user_1.getFriends);
 exports.router.route("/search").get(user_1.searchUser);
