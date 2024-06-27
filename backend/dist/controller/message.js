@@ -12,11 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMessage = exports.getMessage = exports.saveMessage = void 0;
+exports.videoUpload = exports.imageUpload = exports.deleteMessage = exports.getMessage = exports.saveMessage = void 0;
 const message_1 = require("../model/message");
 const mongoose_1 = __importDefault(require("mongoose"));
 const user_1 = require("../model/user");
 const mongodb_1 = require("mongodb");
+const fs_1 = __importDefault(require("fs"));
+const sharp_1 = __importDefault(require("sharp"));
+const client_s3_1 = require("@aws-sdk/client-s3");
 const saveMessage = (text, kind, by, to) => __awaiter(void 0, void 0, void 0, function* () {
     let user1, user2;
     if (by > to) {
@@ -124,3 +127,57 @@ const getMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.getMessage = getMessage;
 const deleteMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
 exports.deleteMessage = deleteMessage;
+const s3Client = new client_s3_1.S3Client({
+    region: process.env.NEXT_AWS_S3_REGION,
+    credentials: {
+        accessKeyId: process.env.NEXT_AWs_S3_ACCESS_KEY_ID,
+        secretAccessKey: process.env.NEXT_AWS_S3_SECRET_KEY,
+    },
+});
+const uploadToS3 = (file, name) => __awaiter(void 0, void 0, void 0, function* () {
+    const params = {
+        Bucket: process.env.NEXT_AWS_S3_BUCKET_NAME,
+        Key: `${name}`,
+        Body: file,
+        ContentType: ["image/jpg", "image/png", "image/svg"],
+    };
+    const command = new client_s3_1.PutObjectCommand(params);
+    try {
+        const response = yield s3Client.send(command);
+        console.log("File uploaded successfully:", response);
+        return response;
+    }
+    catch (error) {
+        throw error;
+    }
+});
+const imageUpload = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //Image compression
+    //Upload to S3
+    if (req.file) {
+        try {
+            const compressedImage = yield (0, sharp_1.default)(req.file.path)
+                .resize(800)
+                .png({ quality: 80 })
+                .toBuffer();
+            yield uploadToS3(compressedImage, req.file.filename);
+            const imageUrl = `https://${process.env.NEXT_AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${req.file.filename}`;
+            console.log(imageUrl);
+            fs_1.default.unlink(req.file.path, (err) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json({ message: "something went wrong:(" });
+                }
+            });
+            return res.status(200).json(imageUrl);
+        }
+        catch (err) {
+            console.log(err);
+            return res.status(500).json({ message: "something went wrong:(" });
+        }
+    }
+    return res.status(400).json({ message: "file not found :(" });
+});
+exports.imageUpload = imageUpload;
+const videoUpload = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.videoUpload = videoUpload;

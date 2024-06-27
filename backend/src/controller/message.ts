@@ -3,7 +3,9 @@ import { conversationModel, messageModel } from "../model/message";
 import mongoose from "mongoose";
 import { userModel } from "../model/user";
 import { ObjectId } from "mongodb";
-
+import fs from "fs";
+import sharp from "sharp";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 export const saveMessage = async (
   text: string,
   kind: string,
@@ -113,3 +115,55 @@ export const getMessage = async (req: Request, res: Response) => {
 };
 
 export const deleteMessage = async (req: Request, res: Response) => {};
+const s3Client = new S3Client({
+  region: process.env.NEXT_AWS_S3_REGION as string,
+  credentials: {
+    accessKeyId: process.env.NEXT_AWs_S3_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.NEXT_AWS_S3_SECRET_KEY as string,
+  },
+});
+const uploadToS3 = async (file: any, name: any) => {
+  const params = {
+    Bucket: process.env.NEXT_AWS_S3_BUCKET_NAME as string,
+    Key: `${name}`,
+    Body: file,
+    ContentType: ["image/jpg", "image/png", "image/svg"],
+  };
+
+  const command = new PutObjectCommand(params as any);
+  try {
+    const response = await s3Client.send(command);
+    console.log("File uploaded successfully:", response);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const imageUpload = async (req: Request, res: Response) => {
+  //Image compression
+
+  //Upload to S3
+  if (req.file) {
+    try {
+      const compressedImage = await sharp(req.file.path)
+        .resize(800)
+        .png({ quality: 80 })
+        .toBuffer();
+      await uploadToS3(compressedImage, req.file.filename);
+      const imageUrl = `https://${process.env.NEXT_AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${req.file.filename}`;
+      console.log(imageUrl);
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ message: "something went wrong:(" });
+        }
+      });
+      return res.status(200).json(imageUrl);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "something went wrong:(" });
+    }
+  }
+  return res.status(400).json({ message: "file not found :(" });
+};
+export const videoUpload = async (req: Request, res: Response) => {};

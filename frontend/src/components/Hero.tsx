@@ -8,6 +8,7 @@ import {
 import mern from "@/img/Mern.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import ReactPlayer from "react-player";
 const arr = [
   {
     image: mern,
@@ -24,7 +25,7 @@ const arr = [
 ];
 const Hero = () => {
   return (
-    <div className="flex flex-col justify-around items-center my-2">
+    <div className="flex flex-col justify-around items-center my-2 ">
       <div className="flex flex-col items-center justify-center min-h-[70dvh]">
         <p className="text-[40px] md:text-[50px] text-center">
           Stay connected with ease and style
@@ -43,7 +44,13 @@ const Hero = () => {
         </Link>
       </div>
 
-      <div className="flex flex-col gap-2 mb-3">
+      <div className="h-[60dvh] flex items-center justify-center">
+        <iframe
+          src="https://www.loom.com/embed/dbc5d7525e8e422eaf9c5b67fa634a58?sid=cc800c5b-3498-4a48-96f6-bf5d78ed2f9d"
+          className="h-[400px] w-[700px]"
+        ></iframe>
+      </div>
+      <div className="flex flex-col gap-2 mb-3 mt-4">
         <p className="text-[25px]  text-center">About Stack Used</p>
         <Carousel className="w-full max-w-xs">
           <CarouselContent>
