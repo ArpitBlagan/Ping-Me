@@ -110,7 +110,7 @@ const TextArea = () => {
         inline: "nearest",
       });
     }
-  }, [conversation, emojiOpen]);
+  }, [conversation]);
   useEffect(() => {
     const getConv = async () => {
       setConvLoading(true);
@@ -564,8 +564,8 @@ const TextArea = () => {
                         <div>
                           <img
                             src={ele.text}
-                            width={400}
-                            height={400}
+                            width={200}
+                            height={200}
                             className="rounded-md"
                           />
                         </div>
