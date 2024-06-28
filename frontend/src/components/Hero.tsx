@@ -46,7 +46,7 @@ const Hero = () => {
       <div className="h-[60dvh] flex items-center justify-center">
         <iframe
           src="https://www.loom.com/embed/dbc5d7525e8e422eaf9c5b67fa634a58?sid=cc800c5b-3498-4a48-96f6-bf5d78ed2f9d"
-          className="h-[400px] w-[700px]"
+          className="h-[400px] w-[700px] rounded-md"
         ></iframe>
       </div>
       <div className="flex flex-col gap-2 mb-3 mt-4">
