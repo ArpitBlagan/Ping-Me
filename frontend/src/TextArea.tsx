@@ -15,7 +15,7 @@ import { useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { contextt } from "./Contextt";
-import { ArrowLeft, Laugh, Paperclip, X } from "lucide-react";
+import { ArrowLeft, EllipsisVertical, Laugh, Paperclip, X } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import uuid from "react-uuid";
 const TextArea = () => {
@@ -39,7 +39,8 @@ const TextArea = () => {
   const seleId = useRef(null);
   const scrollRef2 = useRef(null);
   const [emojiOpen, setEmojiOpne] = useState(false);
-
+  const [fileDia, setFileDia] = useState(false);
+  const [addId, setAddId] = useState("");
   useEffect(() => {
     console.log(value?.info);
     let sock: WebSocket;
@@ -95,7 +96,6 @@ const TextArea = () => {
 
   useEffect(() => {
     if (scrollRef && scrollRef.current) {
-      console.log("working");
       //@ts-ignore
       scrollRef.current?.scrollIntoView({
         block: "end",
@@ -103,14 +103,13 @@ const TextArea = () => {
       });
     }
     if (scrollRef2 && scrollRef2.current) {
-      console.log("working");
       //@ts-ignore
       scrollRef2.current?.scrollIntoView({
         block: "end",
         inline: "nearest",
       });
     }
-  }, [conversation]);
+  }, [conversation, emojiOpen]);
   useEffect(() => {
     const getConv = async () => {
       try {
@@ -222,6 +221,7 @@ const TextArea = () => {
                                 e.preventDefault();
                                 const body = { id: ele._id };
                                 setAddL(true);
+                                setAddId(ele.id);
                                 try {
                                   await axios.patch(
                                     "https://chat-assignment-qrb7.onrender.com/api/addFriend",
@@ -240,7 +240,7 @@ const TextArea = () => {
                                 }
                               }}
                             >
-                              {addL ? "Adding" : "Add"}
+                              {addL && addId == ele.id ? "Adding" : "Add"}
                             </Button>
                           </div>
                         );
@@ -288,6 +288,7 @@ const TextArea = () => {
                 <div className="flex gap-2 items-center">
                   <p className="text-2xl">{sele.name}</p>
                   <p className="text-gray-600">{sele.email}</p>
+                  <EllipsisVertical />
                 </div>
                 <p>
                   {/* @ts-ignore */}
@@ -298,7 +299,7 @@ const TextArea = () => {
                   )}
                 </p>
               </div>
-              <div className="h-[60dvh] overflow-hidden overflow-y-auto py-2 px-4 relative">
+              <div className="h-[60dvh] overflow-hidden overflow-y-auto py-2 px-4">
                 {conversation.map((ele: any, index: any) => {
                   return (
                     <div
@@ -309,28 +310,40 @@ const TextArea = () => {
                           : "justify-start"
                       } mb-4`}
                     >
-                      <div
-                        className={`max-w-xs break-words ${
-                          ele.by._id == value?.info.id
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-300 text-black"
-                        } p-3 rounded-lg`}
-                      >
-                        {ele.text}
-                      </div>
+                      {ele.kind == "text" ? (
+                        <div
+                          className={`max-w-xs break-words ${
+                            ele.by._id == value?.info.id
+                              ? "bg-blue-500 text-white"
+                              : "bg-gray-300 text-black"
+                          } p-3 rounded-lg`}
+                        >
+                          {ele.text}
+                        </div>
+                      ) : (
+                        <div>
+                          <img
+                            src={ele.text}
+                            width={400}
+                            height={400}
+                            className="rounded-md"
+                          />
+                        </div>
+                      )}
                     </div>
                   );
                 })}
-                <div ref={scrollRef} />
-                <EmojiPicker
-                  className="absolute  mt-10"
-                  open={emojiOpen}
-                  onEmojiClick={(emojiObject) => {
-                    setMessage((prev) => {
-                      return prev + emojiObject.emoji;
-                    });
-                  }}
-                />
+                <div className="flex w-full justify-right items-center">
+                  <EmojiPicker
+                    className="mt-10"
+                    open={emojiOpen}
+                    onEmojiClick={(emojiObject) => {
+                      setMessage((prev) => {
+                        return prev + emojiObject.emoji;
+                      });
+                    }}
+                  />
+                </div>
                 <div ref={scrollRef} />
               </div>
               <div className="flex items-center gap-1 md:gap-3">
@@ -342,68 +355,98 @@ const TextArea = () => {
                     setMessage(e.target.value);
                   }}
                 />
-                <Dialog>
+                <Dialog open={fileDia} onOpenChange={setFileDia}>
                   <DialogTrigger asChild>
                     <Paperclip />
                   </DialogTrigger>
-                  <DialogContent className="">
-                    <form className="flex flex-col gap-2 justify-center">
-                      <label className="text-center">Choose file/Image</label>
-                      <Input
-                        type="file"
-                        className="text-gray-500"
-                        onChange={async (e: any) => {
-                          const ff = e.target.files[0];
-                          setFile(ff);
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setPreview(reader.result);
-                          };
-                          reader.readAsDataURL(ff);
-                        }}
-                      />
-                      {preview && (
-                        <div className="flex items-center justify-center w-full">
-                          <img
-                            src={preview}
-                            alt="Preview"
-                            style={{ width: "200px", marginTop: "10px" }}
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="text-center">
+                        Choose File
+                      </DialogTitle>
+                      <DialogDescription>
+                        <form className="flex flex-col gap-2 justify-center">
+                          <Input
+                            type="file"
+                            className="text-gray-500 cursor-pointer"
+                            onChange={async (e: any) => {
+                              const ff = e.target.files[0];
+                              setFile(ff);
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                setPreview(reader.result);
+                              };
+                              reader.readAsDataURL(ff);
+                            }}
                           />
-                        </div>
-                      )}
-                      <Button
-                        className="bg-green-500"
-                        onClick={async (e) => {
-                          e.preventDefault();
-                          toast("uploading image first");
-                          try {
-                            const formdata = new FormData();
-                            formdata.append("file", file);
-                            // const res = await axios.post(
-                            //   "http://localhost:8000/api/upload/file",
-                            //   formdata,
-                            //   { withCredentials: true }
-                            // );
-
-                            toast.success("working on this functionality 🙏🏼");
-                          } catch (err) {
-                            toast.error(
-                              "something went wrong while uploading the file"
-                            );
-                          }
-                        }}
-                      >
-                        Upload
-                      </Button>
-                    </form>
+                          {preview && (
+                            <div className="flex items-center justify-center w-full">
+                              <img
+                                src={preview}
+                                alt="Preview"
+                                style={{ width: "200px", marginTop: "10px" }}
+                                className="rounded-md"
+                              />
+                            </div>
+                          )}
+                          <Button
+                            className="bg-green-500"
+                            onClick={async (e) => {
+                              e.preventDefault();
+                              toast("uploading image first");
+                              try {
+                                const formdata = new FormData();
+                                formdata.append("file", file);
+                                const res = await axios.post(
+                                  "https://chat-assignment-qrb7.onrender.com/api/upload/file",
+                                  formdata,
+                                  { withCredentials: true }
+                                );
+                                console.log("image url", res.data);
+                                toast("now sending");
+                                const uu = uuid();
+                                const body = JSON.stringify({
+                                  type: "text",
+                                  kind: "image",
+                                  text: res.data,
+                                  by: value?.info.id,
+                                  senderEmail: value?.info.email,
+                                  to: sele.id,
+                                  receiverEmail: sele.email,
+                                  uu,
+                                });
+                                socket?.send(body);
+                                setConv((prev) => {
+                                  return [
+                                    ...prev,
+                                    {
+                                      by: { _id: value?.info.id },
+                                      type: "text",
+                                      kind: "image",
+                                      text: res.data,
+                                      uu,
+                                    },
+                                  ];
+                                });
+                                setFileDia(false);
+                              } catch (err) {
+                                toast.error(
+                                  "something went wrong while uploading the file"
+                                );
+                              }
+                            }}
+                          >
+                            Upload
+                          </Button>
+                        </form>
+                      </DialogDescription>
+                    </DialogHeader>
                   </DialogContent>
                 </Dialog>
                 <Button
                   onClick={(e) => {
                     e.preventDefault();
                     setEmojiOpne(!emojiOpen);
-                    //@ts-ignore
-                    scrollRef.current?.scrollIntoView();
                   }}
                   className="py-1 px-2"
                 >
@@ -434,6 +477,7 @@ const TextArea = () => {
                         {
                           by: { _id: value?.info.id },
                           type: "text",
+                          kind: "text",
                           text: message,
                           uu,
                         },
@@ -471,6 +515,7 @@ const TextArea = () => {
                     <div className="flex items-center gap-3">
                       <p className="text-2xl">{sele.name}</p>
                       <p className="text-gray-600">{sele.email}</p>
+                      <EllipsisVertical />
                     </div>
                     <p>
                       {/* @ts-ignore */}
@@ -494,20 +539,31 @@ const TextArea = () => {
                           : "justify-start"
                       } mb-4`}
                     >
-                      <div
-                        className={`max-w-xs break-words ${
-                          ele.by._id == value?.info.id
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-300 text-black"
-                        } p-3 rounded-lg`}
-                      >
-                        {ele.text}
-                      </div>
+                      {ele.kind == "text" ? (
+                        <div
+                          className={`max-w-xs break-words ${
+                            ele.by._id == value?.info.id
+                              ? "bg-blue-500 text-white"
+                              : "bg-gray-300 text-black"
+                          } p-3 rounded-lg`}
+                        >
+                          {ele.text}
+                        </div>
+                      ) : (
+                        <div>
+                          <img
+                            src={ele.text}
+                            width={400}
+                            height={400}
+                            className="rounded-md"
+                          />
+                        </div>
+                      )}
                     </div>
                   );
                 })}
                 <EmojiPicker
-                  className="absolute  mt-10"
+                  className="mt-10"
                   open={emojiOpen}
                   onEmojiClick={(emojiObject) => {
                     setMessage((prev) => {
@@ -526,67 +582,95 @@ const TextArea = () => {
                     setMessage(e.target.value);
                   }}
                 />
-                <Dialog>
+                <Dialog open={fileDia} onOpenChange={setFileDia}>
                   <DialogTrigger asChild>
                     <Paperclip />
                   </DialogTrigger>
                   <DialogContent>
-                    <form className="flex flex-col gap-5">
-                      <label className="text-center">Choose file/Image</label>
-                      <Input
-                        type="file"
-                        className="text-gray-500"
-                        onChange={async (e: any) => {
-                          const ff = e.target.files[0];
-                          setFile(ff);
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setPreview(reader.result);
-                          };
-                          reader.readAsDataURL(ff);
-                        }}
-                      />
-                      {preview && (
-                        <div className="flex items-center justify-center w-full">
-                          <img
-                            src={preview}
-                            alt="Preview"
-                            style={{ width: "200px", marginTop: "10px" }}
+                    <DialogHeader>
+                      <DialogTitle className="text-center">
+                        Choose File
+                      </DialogTitle>
+                      <DialogDescription>
+                        <form className="flex flex-col gap-5">
+                          <Input
+                            type="file"
+                            className="text-gray-500"
+                            onChange={async (e: any) => {
+                              const ff = e.target.files[0];
+                              setFile(ff);
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                setPreview(reader.result);
+                              };
+                              reader.readAsDataURL(ff);
+                            }}
                           />
-                        </div>
-                      )}
-                      <Button
-                        className="bg-green-500"
-                        onClick={async (e) => {
-                          e.preventDefault();
-                          toast("uploading image first");
-                          try {
-                            const formdata = new FormData();
-                            formdata.append("file", file);
-                            // await axios.post(
-                            //   "http://localhost:8000/api/upload/file",
-                            //   formdata,
-                            //   { withCredentials: true }
-                            // );
-                            toast.success("Working on this functionality 🙏🏼");
-                          } catch (err) {
-                            toast.error(
-                              "something went wrong while uploading the file"
-                            );
-                          }
-                        }}
-                      >
-                        Upload
-                      </Button>
-                    </form>
+                          {preview && (
+                            <div className="flex items-center justify-center w-full">
+                              <img
+                                src={preview}
+                                alt="Preview"
+                                style={{ width: "200px", marginTop: "10px" }}
+                              />
+                            </div>
+                          )}
+                          <Button
+                            className="bg-green-500"
+                            onClick={async (e) => {
+                              e.preventDefault();
+                              toast("uploading image first");
+                              try {
+                                const formdata = new FormData();
+                                formdata.append("file", file);
+                                const res = await axios.post(
+                                  "https://chat-assignment-qrb7.onrender.com/api/upload/file",
+                                  formdata,
+                                  { withCredentials: true }
+                                );
+                                const uu = uuid();
+                                const body = JSON.stringify({
+                                  type: "text",
+                                  kind: "image",
+                                  text: res.data,
+                                  by: value?.info.id,
+                                  senderEmail: value?.info.email,
+                                  to: sele.id,
+                                  receiverEmail: sele.email,
+                                  uu,
+                                });
+                                socket?.send(body);
+                                setConv((prev) => {
+                                  return [
+                                    ...prev,
+                                    {
+                                      by: { _id: value?.info.id },
+                                      type: "text",
+                                      kind: "image",
+                                      text: res.data,
+                                      uu,
+                                    },
+                                  ];
+                                });
+                                setFileDia(false);
+                              } catch (err) {
+                                toast.error(
+                                  "something went wrong while uploading the file"
+                                );
+                              }
+                            }}
+                          >
+                            Upload
+                          </Button>
+                        </form>
+                      </DialogDescription>
+                    </DialogHeader>
                   </DialogContent>
                 </Dialog>
                 <Button
                   onClick={(e) => {
                     e.preventDefault();
                     setEmojiOpne(!emojiOpen);
-                    //@ts-ignore
-                    scrollRef.current?.scrollIntoView();
                   }}
                 >
                   {emojiOpen ? <X /> : <Laugh />}
