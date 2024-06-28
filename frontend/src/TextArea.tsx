@@ -333,9 +333,13 @@ const TextArea = () => {
                     </div>
                   );
                 })}
-                <div className="flex w-full justify-right items-center">
+
+                <div ref={scrollRef} />
+              </div>
+              <div className="flex items-center gap-1 md:gap-3 relative">
+                <div className="absolute bottom-0 left-0">
                   <EmojiPicker
-                    className="mt-10"
+                    className="mt-10 "
                     open={emojiOpen}
                     onEmojiClick={(emojiObject) => {
                       setMessage((prev) => {
@@ -344,9 +348,6 @@ const TextArea = () => {
                     }}
                   />
                 </div>
-                <div ref={scrollRef} />
-              </div>
-              <div className="flex items-center gap-1 md:gap-3">
                 <Input
                   placeholder="enter text :) !"
                   className="flex-1 py-4 px-4 h-[50px]"
@@ -511,8 +512,8 @@ const TextArea = () => {
                       }}
                     />
                   </div>
-                  <div className="flex flex-col items-end justify-center gap-2">
-                    <div className="flex items-center gap-3">
+                  <div className="flex flex-col md:items-end justify-center md:gap-2">
+                    <div className="flex items-center gap-1 md:gap-3">
                       <p className="text-2xl">{sele.name}</p>
                       <p className="text-gray-600">{sele.email}</p>
                       <EllipsisVertical />
@@ -528,7 +529,7 @@ const TextArea = () => {
                   </div>
                 </div>
               </div>
-              <div className="h-[60dvh] overflow-hidden overflow-y-auto py-2 px-4 relative">
+              <div className="h-[60dvh] overflow-hidden overflow-y-auto py-2 px-4 ">
                 {conversation.map((ele: any, index: any) => {
                   return (
                     <div
@@ -562,18 +563,22 @@ const TextArea = () => {
                     </div>
                   );
                 })}
-                <EmojiPicker
-                  className="mt-10"
-                  open={emojiOpen}
-                  onEmojiClick={(emojiObject) => {
-                    setMessage((prev) => {
-                      return prev + emojiObject.emoji;
-                    });
-                  }}
-                />
                 <div ref={scrollRef2} />
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 relative">
+                <div className="absolute bottom-0 left-0">
+                  <EmojiPicker
+                    className="mt-10 "
+                    width={180}
+                    height={400}
+                    open={emojiOpen}
+                    onEmojiClick={(emojiObject) => {
+                      setMessage((prev) => {
+                        return prev + emojiObject.emoji;
+                      });
+                    }}
+                  />
+                </div>
                 <Input
                   placeholder="enter text :) !"
                   className="flex-1 py-4 px-4 h-[50px]"

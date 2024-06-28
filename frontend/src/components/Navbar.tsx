@@ -20,7 +20,7 @@ const Navbar = () => {
   return (
     <div className="flex items-center border border-gray-600 rounded-xl py-2 px-4">
       <div className="flex-1 text-[26px] bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text">
-        <Link to="/">Texting-App</Link>
+        <Link to="/">Ping Me</Link>
       </div>
       <div className="flex items-center justify-end gap-5">
         {value?.info.isloggedIn ? (

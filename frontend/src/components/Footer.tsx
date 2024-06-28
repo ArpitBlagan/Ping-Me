@@ -21,7 +21,7 @@ const Footer = () => {
       </div>
       <div className="flex-1 flex justify-end items-center gap-4">
         <Link to="/" className="font-semibold text-xl">
-          Chap-App
+          Ping Me
         </Link>
       </div>
     </div>
