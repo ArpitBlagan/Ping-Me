@@ -8,7 +8,6 @@ import {
 import mern from "@/img/Mern.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import ReactPlayer from "react-player";
 const arr = [
   {
     image: mern,
