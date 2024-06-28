@@ -25,21 +25,29 @@ const arr = [
 const Hero = () => {
   return (
     <div className="flex flex-col justify-around items-center my-2 ">
-      <div className="flex flex-col items-center justify-center min-h-[70dvh]">
+      <div className="flex flex-col items-center justify-center min-h-[70dvh] gap-3">
         <p className="text-[40px] md:text-[50px] text-center">
           Stay connected with ease and style
           <br />
-          using our intuitive texting-app
+          using our intuitive texting-app 🚀.
           <br />
-          your ultimate solution for seamless,
-          <br />
-          instant communication 🚀.
+          <span className="bg-gradient-to-r from-gray-600 via-purple-500 to-red-400 inline-block text-transparent bg-clip-text">
+            your ultimate solution for seamless,
+            <br />
+            instant communication.
+          </span>
+        </p>
+        <p className="w-1/2 text-center">
+          The application leverages the{" "}
+          <span className="text-red-500">ws library</span> to enable WebSocket
+          communication, providing users with a seamless and instant messaging
+          experience.
         </p>
         <Link
           to="/chat"
-          className="py-2 px-4 mt-2 border border-gray-400 rounded-xl "
+          className="py-2 px-4 mt-2 w-1/4 text-center border border-gray-400 rounded-xl  hover:underline transition duration-300 ease-in-out"
         >
-          TextArea
+          Text-Area
         </Link>
       </div>
 

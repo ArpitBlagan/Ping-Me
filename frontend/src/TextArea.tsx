@@ -41,6 +41,7 @@ const TextArea = () => {
   const [emojiOpen, setEmojiOpne] = useState(false);
   const [fileDia, setFileDia] = useState(false);
   const [addId, setAddId] = useState("");
+  const [convLoading, setConvLoading] = useState(false);
   useEffect(() => {
     console.log(value?.info);
     let sock: WebSocket;
@@ -112,6 +113,7 @@ const TextArea = () => {
   }, [conversation, emojiOpen]);
   useEffect(() => {
     const getConv = async () => {
+      setConvLoading(true);
       try {
         const res = await axios.get(
           `https://chat-assignment-qrb7.onrender.com/api/conversation?to=${sele.id}`,
@@ -121,8 +123,10 @@ const TextArea = () => {
         );
         console.log(res.data);
         setConv(res.data.messages);
+        setConvLoading(false);
       } catch (err) {
         toast.error("something went wrong while fetching chat history :( !");
+        setConvLoading(false);
       }
     };
     if (sele) {
@@ -300,39 +304,45 @@ const TextArea = () => {
                 </p>
               </div>
               <div className="h-[60dvh] overflow-hidden overflow-y-auto py-2 px-4">
-                {conversation.map((ele: any, index: any) => {
-                  return (
-                    <div
-                      key={index}
-                      className={`flex ${
-                        ele.by._id == value?.info.id
-                          ? "justify-end"
-                          : "justify-start"
-                      } mb-4`}
-                    >
-                      {ele.kind == "text" ? (
-                        <div
-                          className={`max-w-xs break-words ${
-                            ele.by._id == value?.info.id
-                              ? "bg-blue-500 text-white"
-                              : "bg-gray-300 text-black"
-                          } p-3 rounded-lg`}
-                        >
-                          {ele.text}
-                        </div>
-                      ) : (
-                        <div>
-                          <img
-                            src={ele.text}
-                            width={400}
-                            height={400}
-                            className="rounded-md"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                {convLoading ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Triangle />
+                  </div>
+                ) : (
+                  conversation.map((ele: any, index: any) => {
+                    return (
+                      <div
+                        key={index}
+                        className={`flex ${
+                          ele.by._id == value?.info.id
+                            ? "justify-end"
+                            : "justify-start"
+                        } mb-4`}
+                      >
+                        {ele.kind == "text" ? (
+                          <div
+                            className={`max-w-xs break-words ${
+                              ele.by._id == value?.info.id
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-300 text-black"
+                            } p-3 rounded-lg`}
+                          >
+                            {ele.text}
+                          </div>
+                        ) : (
+                          <div>
+                            <img
+                              src={ele.text}
+                              width={400}
+                              height={400}
+                              className="rounded-md"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
 
                 <div ref={scrollRef} />
               </div>
