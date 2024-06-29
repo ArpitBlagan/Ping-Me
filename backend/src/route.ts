@@ -1,10 +1,5 @@
 import { Router } from "express";
-import {
-  deleteMessage,
-  getMessage,
-  imageUpload,
-  videoUpload,
-} from "./controller/message";
+import { deleteMessage, getMessage, imageUpload } from "./controller/message";
 import {
   login,
   register,
@@ -33,7 +28,6 @@ router.route("/logout").get(logout);
 router.route("/upload/file").post(upload.single("file"), imageUpload);
 router.use(validateToken);
 
-router.route("/upload/video").post(videoUpload);
 router.route("/friends").get(getFriends);
 router.route("/search").get(searchUser);
 router.route("/addFriend").patch(addFriend);
