@@ -9,6 +9,8 @@ import mern from "@/img/Mern.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { GithubIcon } from "lucide-react";
+import { useContext } from "react";
+import { contextt } from "@/Contextt";
 const arr = [
   {
     image: mern,
@@ -24,6 +26,7 @@ const arr = [
   },
 ];
 const Hero = () => {
+  const value = useContext(contextt);
   return (
     <div className="flex flex-col justify-around items-center my-2 ">
       <div className="flex flex-col items-center justify-center min-h-[70dvh] gap-3">
@@ -38,12 +41,14 @@ const Hero = () => {
             instant communication.
           </span>
         </p>
-        <Link
-          to="/chat"
-          className="py-2 px-4 mt-2  text-center border  rounded-xl  hover:bg-violet-400 transition duration-300 ease-in-out"
-        >
-          Text-Area
-        </Link>
+        {value?.info.isloggedIn && (
+          <Link
+            to="/chat"
+            className="py-2 px-4 mt-2  text-center border  rounded-xl  hover:bg-violet-400 transition duration-300 ease-in-out"
+          >
+            Text-Area
+          </Link>
+        )}
         <p className="w-8/13 text-center text-[15px] text-xl">
           The application leverages the{" "}
           <span className="text-red-500">ws library</span> to enable WebSocket

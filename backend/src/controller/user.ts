@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { userModel } from "../model/user";
+import { groupModel, userModel } from "../model/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import * as z from "zod";
@@ -131,6 +131,20 @@ export const searchUser = async (req: Request, res: Response) => {
       $or: [{ email: { $regex: regex } }, { name: { $regex: regex } }],
     });
     res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
+
+export const addMember = async (req: Request, res: Response) => {
+  const { userId, groupId } = req.body;
+  try {
+    await groupModel.findByIdAndUpdate(groupId, {
+      $push: {
+        users: userId,
+      },
+    });
+    res.status(202).json({ message: "member added to the group successfully" });
   } catch (err) {
     res.status(500).json({ message: "something went wrong" });
   }

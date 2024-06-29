@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { conversationModel, messageModel } from "../model/message";
 import mongoose from "mongoose";
-import { userModel } from "../model/user";
+import { groupModel, userModel } from "../model/user";
 import { ObjectId } from "mongodb";
 import fs from "fs";
 import sharp from "sharp";
@@ -166,4 +166,42 @@ export const imageUpload = async (req: Request, res: Response) => {
   }
   return res.status(400).json({ message: "file not found :(" });
 };
-export const videoUpload = async (req: Request, res: Response) => {};
+
+export const createGroup = async (req: Request, res: Response) => {
+  const id = req.user.id;
+  let imageUrl = "";
+  const name = req.body.name;
+  if (req.file) {
+    try {
+      const compressedImage = await sharp(req.file.path)
+        .resize(800)
+        .png({ quality: 80 })
+        .toBuffer();
+      await uploadToS3(compressedImage, req.file.filename);
+      imageUrl = `https://${process.env.NEXT_AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${req.file.filename}`;
+      console.log(imageUrl);
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ message: "something went wrong:(" });
+        }
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "something went wrong:(" });
+    }
+  }
+  try {
+    await groupModel.create({
+      name,
+      profileImage: imageUrl,
+      users: [id],
+      messages: [],
+      admin: id,
+    });
+    res.status(202).json({ message: "group created successfully" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "something went wrong:(" });
+  }
+};
