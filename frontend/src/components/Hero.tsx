@@ -44,7 +44,7 @@ const Hero = () => {
         {value?.info.isloggedIn && (
           <Link
             to="/chat"
-            className="py-2 px-4 mt-2  text-center border  rounded-xl  hover:bg-violet-400 transition duration-300 ease-in-out"
+            className=" py-2 px-4 mt-2  text-center border  rounded-xl  hover:bg-violet-400 transition duration-300 ease-in-out"
           >
             Text-Area
           </Link>
@@ -60,7 +60,11 @@ const Hero = () => {
             href="https://github.com/ArpitBlagan/chat-assignment"
             target="_blank"
           >
-            <GithubIcon width={50} height={30} />
+            <GithubIcon
+              width={50}
+              height={30}
+              className="hover:bg-red-500 rounded-xl py-1"
+            />
           </a>
           <p>Codebase</p>
         </div>

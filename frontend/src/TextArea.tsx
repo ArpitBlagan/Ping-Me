@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
+import pingme from "@/img/pingme.png";
 import { Button } from "./components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "./components/ui/input";
@@ -503,8 +503,16 @@ const TextArea = () => {
               </div>
             </div>
           ) : (
-            <div className="flex justify-center items-center ">
-              Chatting-App
+            <div className="flex flex-col justify-center items-center h-full dark:bg-gray-600 rounded-xl">
+              <img
+                src={pingme}
+                height={500}
+                width={500}
+                className="rounded-xl "
+              />
+              <div className="flex items-end justify-center w-full ">
+                <p>Face Time Feature coming soon 🚀.</p>
+              </div>
             </div>
           )}
         </div>
