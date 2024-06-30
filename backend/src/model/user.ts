@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 const userSchema = new Schema({
   name: String,
-  email: String,
+  email: { type: String, unique: true },
   password: String,
   friends: [{ type: Schema.Types.ObjectId, ref: "userModel" }],
   groups: [{ type: Schema.Types.ObjectId, ref: "groupModel" }],

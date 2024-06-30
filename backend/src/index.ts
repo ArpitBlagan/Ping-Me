@@ -33,8 +33,11 @@ wss.on("connection", (ws: WebSocket, req: Request) => {
   const email = req.url.split("=").pop();
   console.log(email);
   if (email) {
-    instance.addUser(email, ws);
-    instance.sendOnlineuser();
+    if (email[0] >= "0" || email[0] <= "9") {
+    } else {
+      instance.addUser(email, ws);
+      instance.sendOnlineuser();
+    }
   }
   ws.on("message", async (data: any) => {
     const message = JSON.parse(data);

@@ -173,7 +173,7 @@ export const createGroup = async (req: Request, res: Response) => {
   const name = req.body.name;
   const users = JSON.parse(req.body.users);
   users.push(id);
-  console.log(name, req.file);
+  console.log(name, req.file, users);
   if (req.file) {
     try {
       const compressedImage = await sharp(req.file.path)

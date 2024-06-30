@@ -1,6 +1,7 @@
 import { WebSocket } from "ws";
 import { saveMessage } from "./controller/message";
-
+import redis, { RedisClientType } from "redis";
+import { userModel } from "./model/user";
 interface element {
   ws: WebSocket;
   email: string;
@@ -95,5 +96,50 @@ export class WsManager {
       });
       ws.send(body);
     }
+  }
+}
+
+interface User {
+  ws: WebSocket;
+  email: string;
+}
+
+export class GroupManager {
+  private static instance: GroupManager;
+  public groups: Map<string, User[]>;
+  private redisClient: RedisClientType;
+  private constructor() {
+    this.redisClient = redis.createClient();
+    this.redisClient.connect();
+    this.groups = new Map();
+  }
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new GroupManager();
+    }
+    return this.instance;
+  }
+  async addUser(ws: WebSocket, email: string) {
+    const user = await userModel.findOne({ email }).populate("groups");
+    if (!user) {
+      return { message: "user not found or something wrong with the server" };
+    }
+    const groups = user?.groups;
+    groups?.forEach((ele: any) => {
+      this.redisClient.subscribe(ele.name, this.redisCallbackHandler);
+    });
+  }
+  private redisCallbackHandler = (message: string, channel: string) => {
+    const parsedMessage = JSON.parse(message);
+    console.log(parsedMessage);
+    const users = this.groups.get(channel);
+    if (users && users.length) {
+      users.forEach((ele) => {
+        ele.ws.send(JSON.stringify(parsedMessage));
+      });
+    }
+  };
+  sendMessage(text: string, channel: string) {
+    this.redisClient.publish(channel, JSON.stringify({ message: text }));
   }
 }
