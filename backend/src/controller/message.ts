@@ -173,6 +173,10 @@ export const createGroup = async (req: Request, res: Response) => {
   const name = req.body.name;
   const users = JSON.parse(req.body.users);
   users.push({ id });
+  const another = [];
+  users.forEach((ele: any) => {
+    another.push(ele.id);
+  });
   console.log(name, req.file, users);
   if (req.file) {
     try {
@@ -200,7 +204,7 @@ export const createGroup = async (req: Request, res: Response) => {
     const group = await groupModel.create({
       name,
       profileImage: imageUrl,
-      users,
+      users: another,
       messages: [],
       admin: id,
     });
