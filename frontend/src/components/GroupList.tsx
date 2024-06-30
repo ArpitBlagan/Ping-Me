@@ -21,7 +21,7 @@ const GroupList = ({ refetch }: any) => {
       }
     };
     getGroups();
-  }, []);
+  }, [refetch]);
 
   return (
     <div>
