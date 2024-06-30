@@ -186,7 +186,7 @@ const TextArea = () => {
       <div className="flex items-center justify-end gap-3">
         <Link
           to="/groupchat"
-          className="hover:text-green-600 transition duration-300 ease-in-out"
+          className="border py-2 px-4 rounded-xl hover:bg-green-600 transition duration-300 ease-in-out"
         >
           Group Chat
         </Link>

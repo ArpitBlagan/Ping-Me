@@ -21,7 +21,8 @@ const GroupList = ({ refetch }: any) => {
       }
     };
     getGroups();
-  }, [refetch]);
+  }, []);
+
   return (
     <div>
       {loading ? (
@@ -29,14 +30,25 @@ const GroupList = ({ refetch }: any) => {
           <Triangle />
         </div>
       ) : (
-        <div className="flex flex-wrap gap-3">
-          {groups.map((ele) => {
-            return (
-              <div>
-                <p>{ele.name}</p>
-              </div>
-            );
-          })}
+        <div className="flex flex-col gap-2 border py-2 px-3 rounded-xl">
+          <div className="flex items-center justify-center text-gray-600 text-lg">
+            <p className="hover:text-green-600">Groups</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {groups.map((ele) => {
+              return (
+                <div className="flex items-center gap-3 justify-start border py-2 px-4 rounded-xl cursor-pointer hover:text-green-600">
+                  <img
+                    src={ele.profileImage}
+                    width={50}
+                    height={50}
+                    className="rounded-full"
+                  />
+                  <p>{ele.name}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

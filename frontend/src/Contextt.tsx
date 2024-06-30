@@ -22,7 +22,6 @@ const Contextt = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     toast("Welcome :) !");
     const getInfo = async () => {
-      console.log("checking user token");
       try {
         const res = await axios.get(
           "https://chat-assignment-qrb7.onrender.com/api/isloggedin",
