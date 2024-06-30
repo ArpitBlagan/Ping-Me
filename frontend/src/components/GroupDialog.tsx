@@ -38,9 +38,6 @@ const GroupDialog = ({ setRefetch }: any) => {
         console.log(res.data);
         setUsers(res.data);
         setFLoading(false);
-        setRefetch((prev: any) => {
-          return !prev;
-        });
       } catch (err) {
         toast.error("Not able to fetch the users data :(");
         setFLoading(false);
@@ -74,6 +71,9 @@ const GroupDialog = ({ setRefetch }: any) => {
       toast.success("Group Created Successfully :)");
       setLoading(false);
       setOpen(false);
+      setRefetch((prev: any) => {
+        return !prev;
+      });
     } catch (err) {
       toast.error(`something went wrong while create group ${name}`);
       setLoading(false);
