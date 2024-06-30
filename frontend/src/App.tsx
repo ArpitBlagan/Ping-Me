@@ -9,6 +9,7 @@ import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Group from "./Group";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/chat" element={<TextArea />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/groupchat" element={<Group />} />
           </Routes>
           <hr />
           <Footer />

@@ -21,9 +21,9 @@ const upload = (0, multer_1.default)({ storage, limits: { fileSize: 1000000 } })
 exports.router.route("/login").post(user_1.login);
 exports.router.route("/register").post(user_1.register);
 exports.router.route("/logout").get(user_1.logout);
-exports.router.route("/upload/file").post(upload.single("file"), message_1.imageUpload);
 exports.router.use(middleware_1.validateToken);
-exports.router.route("/upload/video").post(message_1.videoUpload);
+exports.router.route("/group/create").post(upload.single("file"), message_1.createGroup);
+exports.router.route("/upload/file").post(upload.single("file"), message_1.imageUpload);
 exports.router.route("/friends").get(user_1.getFriends);
 exports.router.route("/search").get(user_1.searchUser);
 exports.router.route("/addFriend").patch(user_1.addFriend);

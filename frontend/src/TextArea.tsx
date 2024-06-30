@@ -18,6 +18,7 @@ import { contextt } from "./Contextt";
 import { ArrowLeft, EllipsisVertical, Laugh, Paperclip, X } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import uuid from "react-uuid";
+import { Link } from "react-router-dom";
 const TextArea = () => {
   const value = useContext(contextt);
   const [preview, setPreview] = useState<null | any>(null);
@@ -182,7 +183,13 @@ const TextArea = () => {
   }, [text]);
   return (
     <div className=" my-4 flex flex-col gap-3">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end gap-3">
+        <Link
+          to="/groupchat"
+          className="hover:text-green-600 transition duration-300 ease-in-out"
+        >
+          Group Chat
+        </Link>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild className="cursor-pointer">
             <Button className="w-[160px] bg-green-600">Add+</Button>

@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { deleteMessage, getMessage, imageUpload } from "./controller/message";
+import {
+  createGroup,
+  deleteMessage,
+  getMessage,
+  imageUpload,
+} from "./controller/message";
 import {
   login,
   register,
@@ -7,6 +12,7 @@ import {
   getFriends,
   searchUser,
   logout,
+  getGroup,
 } from "./controller/user";
 import { validateToken } from "./middleware";
 import multer from "multer";
@@ -25,9 +31,10 @@ const upload = multer({ storage, limits: { fileSize: 1000000 } });
 router.route("/login").post(login);
 router.route("/register").post(register);
 router.route("/logout").get(logout);
-router.route("/upload/file").post(upload.single("file"), imageUpload);
 router.use(validateToken);
-
+router.route("/group/create").post(upload.single("file"), createGroup);
+router.route("/group").get(getGroup);
+router.route("/upload/file").post(upload.single("file"), imageUpload);
 router.route("/friends").get(getFriends);
 router.route("/search").get(searchUser);
 router.route("/addFriend").patch(addFriend);

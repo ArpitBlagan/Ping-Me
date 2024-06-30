@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchUser = exports.getFriends = exports.addFriend = exports.register = exports.login = exports.logout = void 0;
+exports.addMember = exports.searchUser = exports.getFriends = exports.addFriend = exports.register = exports.login = exports.logout = void 0;
 const user_1 = require("../model/user");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -151,7 +151,7 @@ exports.addFriend = addFriend;
 const getFriends = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.id;
     try {
-        const user = yield user_1.userModel.findById(userId).populate("friends");
+        const user = yield user_1.userModel.findById(userId).limit(5).populate("friends");
         res.status(200).json(user);
     }
     catch (err) {
@@ -174,3 +174,29 @@ const searchUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.searchUser = searchUser;
+const addMember = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, groupId } = req.body;
+    const session = mongoose_1.default.startSession();
+    (yield session).startTransaction();
+    try {
+        const group = yield user_1.groupModel.findByIdAndUpdate(groupId, {
+            $push: {
+                users: userId,
+            },
+        });
+        yield user_1.userModel.findByIdAndUpdate(userId, {
+            $push: {
+                groups: group === null || group === void 0 ? void 0 : group._id,
+            },
+        });
+        (yield session).commitTransaction();
+        (yield session).endSession();
+        res.status(202).json({ message: "member added to the group successfully" });
+    }
+    catch (err) {
+        (yield session).abortTransaction();
+        (yield session).endSession();
+        res.status(500).json({ message: "something went wrong" });
+    }
+});
+exports.addMember = addMember;

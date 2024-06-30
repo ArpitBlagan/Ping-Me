@@ -113,7 +113,7 @@ export const addFriend = async (req: Request, res: Response) => {
 export const getFriends = async (req: Request, res: Response) => {
   const userId = req.user.id;
   try {
-    const user = await userModel.findById(userId).populate("friends");
+    const user = await userModel.findById(userId).limit(5).populate("friends");
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ message: "something went wrong" });
@@ -138,13 +138,34 @@ export const searchUser = async (req: Request, res: Response) => {
 
 export const addMember = async (req: Request, res: Response) => {
   const { userId, groupId } = req.body;
+  const session = mongoose.startSession();
+  (await session).startTransaction();
   try {
-    await groupModel.findByIdAndUpdate(groupId, {
+    const group = await groupModel.findByIdAndUpdate(groupId, {
       $push: {
         users: userId,
       },
     });
+    await userModel.findByIdAndUpdate(userId, {
+      $push: {
+        groups: group?._id,
+      },
+    });
+    (await session).commitTransaction();
+    (await session).endSession();
     res.status(202).json({ message: "member added to the group successfully" });
+  } catch (err) {
+    (await session).abortTransaction();
+    (await session).endSession();
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
+
+export const getGroup = async (req: Request, res: Response) => {
+  const id = req.user.id;
+  try {
+    const user = await userModel.findById(id).populate("groups");
+    res.status(200).json(user?.groups);
   } catch (err) {
     res.status(500).json({ message: "something went wrong" });
   }

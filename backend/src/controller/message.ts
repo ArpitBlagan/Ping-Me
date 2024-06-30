@@ -171,6 +171,9 @@ export const createGroup = async (req: Request, res: Response) => {
   const id = req.user.id;
   let imageUrl = "";
   const name = req.body.name;
+  const users = JSON.parse(req.body.users);
+  users.push(id);
+  console.log(name, req.file);
   if (req.file) {
     try {
       const compressedImage = await sharp(req.file.path)
@@ -191,17 +194,31 @@ export const createGroup = async (req: Request, res: Response) => {
       return res.status(500).json({ message: "something went wrong:(" });
     }
   }
+  const session = mongoose.startSession();
+  (await session).startTransaction();
   try {
-    await groupModel.create({
+    const group = await groupModel.create({
       name,
       profileImage: imageUrl,
-      users: [id],
+      users,
       messages: [],
       admin: id,
     });
+    const pp = users.map(async (ele: any) => {
+      await userModel.findByIdAndUpdate(ele.id, {
+        $push: {
+          groups: group._id,
+        },
+      });
+    });
+    await Promise.all(pp);
+    (await session).commitTransaction();
+    (await session).endSession();
     res.status(202).json({ message: "group created successfully" });
   } catch (err) {
     console.log(err);
+    (await session).abortTransaction();
+    (await session).endSession();
     return res.status(500).json({ message: "something went wrong:(" });
   }
 };

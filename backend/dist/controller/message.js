@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.videoUpload = exports.imageUpload = exports.deleteMessage = exports.getMessage = exports.saveMessage = void 0;
+exports.createGroup = exports.imageUpload = exports.deleteMessage = exports.getMessage = exports.saveMessage = void 0;
 const message_1 = require("../model/message");
 const mongoose_1 = __importDefault(require("mongoose"));
 const user_1 = require("../model/user");
@@ -179,5 +179,45 @@ const imageUpload = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     return res.status(400).json({ message: "file not found :(" });
 });
 exports.imageUpload = imageUpload;
-const videoUpload = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
-exports.videoUpload = videoUpload;
+const createGroup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.user.id;
+    let imageUrl = "";
+    const name = req.body.name;
+    const users = req.body.users;
+    console.log(name, JSON.parse(users), req.file);
+    // if (req.file) {
+    //   try {
+    //     const compressedImage = await sharp(req.file.path)
+    //       .resize(800)
+    //       .png({ quality: 80 })
+    //       .toBuffer();
+    //     await uploadToS3(compressedImage, req.file.filename);
+    //     imageUrl = `https://${process.env.NEXT_AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${req.file.filename}`;
+    //     console.log(imageUrl);
+    //     fs.unlink(req.file.path, (err) => {
+    //       if (err) {
+    //         console.log(err);
+    //         return res.status(500).json({ message: "something went wrong:(" });
+    //       }
+    //     });
+    //   } catch (err) {
+    //     console.log(err);
+    //     return res.status(500).json({ message: "something went wrong:(" });
+    //   }
+    // }
+    try {
+        // await groupModel.create({
+        //   name,
+        //   profileImage: imageUrl,
+        //   users: [id],
+        //   messages: [],
+        //   admin: id,
+        // });
+        res.status(202).json({ message: "group created successfully" });
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "something went wrong:(" });
+    }
+});
+exports.createGroup = createGroup;

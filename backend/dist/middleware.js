@@ -18,6 +18,7 @@ const validateToken = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     const token = req.cookies.token;
     jsonwebtoken_1.default.verify(token, process.env.SECRET, (err, val) => {
         if (err) {
+            console.log("cool");
             return res.status(403).json({ message: "invalide token" });
         }
         req.user = val.user;

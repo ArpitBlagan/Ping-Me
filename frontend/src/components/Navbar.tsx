@@ -19,8 +19,13 @@ const Navbar = () => {
   console.log(value);
   return (
     <div className="flex items-center border border-gray-600 rounded-xl py-2 px-4">
-      <div className="flex-1 text-[26px]  hover:underline transition duration-300 ease-in-out">
-        <Link to="/">Ping Me</Link>
+      <div className="flex-1 text-[26px]  ">
+        <Link
+          to="/"
+          className="hover:underline transition duration-300 ease-in-out"
+        >
+          Ping Me
+        </Link>
       </div>
       <div className="flex items-center justify-end gap-5">
         {value?.info.isloggedIn ? (

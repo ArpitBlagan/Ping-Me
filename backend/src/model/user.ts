@@ -5,12 +5,13 @@ const userSchema = new Schema({
   email: String,
   password: String,
   friends: [{ type: Schema.Types.ObjectId, ref: "userModel" }],
+  groups: [{ type: Schema.Types.ObjectId, ref: "groupModel" }],
 });
 const groupSchema = new Schema({
   name: String,
   profileImage: String,
   users: [{ type: Schema.Types.ObjectId, ref: "userModel" }],
-  messages: [{ type: Schema.Types.ObjectId, ref: "groupmessageModel" }],
+  messages: [{ type: Schema.Types.ObjectId, ref: "groupMessageModel" }],
   admin: { type: Schema.Types.ObjectId, ref: "userModel" },
   createdAt: {
     type: Date,
@@ -36,5 +37,5 @@ const groupMessageSchema = new Schema({
   },
 });
 export const groupModel = model("groupModel", groupSchema);
-export const gourpMessageMode = model("groupMessageModel", groupMessageSchema);
+export const groupMessageModel = model("groupMessageModel", groupMessageSchema);
 export const userModel = model("userModel", userSchema);
