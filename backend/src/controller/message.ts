@@ -173,7 +173,7 @@ export const createGroup = async (req: Request, res: Response) => {
   const name = req.body.name;
   const users = JSON.parse(req.body.users);
   users.push({ id });
-  const another = [];
+  const another: any[] = [];
   users.forEach((ele: any) => {
     another.push(ele.id);
   });
