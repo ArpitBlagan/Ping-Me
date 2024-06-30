@@ -64,9 +64,13 @@ const GroupDialog = ({ setRefetch }: any) => {
     formdata.append("file", file);
     formdata.append("users", JSON.stringify(seleUsers));
     try {
-      await axios.post("http://localhost:8000/api/group/create", formdata, {
-        withCredentials: true,
-      });
+      await axios.post(
+        "https://chat-assignment-qrb7.onrender.com/api/group/create",
+        formdata,
+        {
+          withCredentials: true,
+        }
+      );
       toast.success("Group Created Successfully :)");
       setLoading(false);
       setOpen(false);
