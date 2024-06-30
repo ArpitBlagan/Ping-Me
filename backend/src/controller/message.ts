@@ -172,7 +172,7 @@ export const createGroup = async (req: Request, res: Response) => {
   let imageUrl = "";
   const name = req.body.name;
   const users = JSON.parse(req.body.users);
-  users.push(id);
+  users.push({ id });
   console.log(name, req.file, users);
   if (req.file) {
     try {
