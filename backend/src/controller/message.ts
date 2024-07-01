@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { conversationModel, messageModel } from "../model/message";
 import mongoose from "mongoose";
-import { groupModel, userModel } from "../model/user";
+import { groupMessageModel, groupModel, userModel } from "../model/user";
 import { ObjectId } from "mongodb";
 import fs from "fs";
 import sharp from "sharp";
@@ -224,5 +224,40 @@ export const createGroup = async (req: Request, res: Response) => {
     (await session).abortTransaction();
     (await session).endSession();
     return res.status(500).json({ message: "something went wrong:(" });
+  }
+};
+
+export const getGroupMessage = async (req: Request, res: Response) => {
+  const { groupId } = req.query;
+  try {
+    const group = await groupModel.findById(groupId).populate("messages");
+    res.status(200).json(group?.messages);
+  } catch (err) {
+    res.status(500).json({ message: "something went wrong:(" });
+  }
+};
+
+export const saveGroupMessage = async (
+  text: string,
+  kind: string,
+  by: string,
+  groupId: string
+) => {
+  const session = mongoose.startSession();
+  (await session).startTransaction();
+  try {
+    const mess = await groupMessageModel.create({ groupId, kind, by, text });
+    await groupModel.findByIdAndUpdate(groupId, {
+      $push: {
+        messages: mess._id,
+      },
+    });
+    (await session).commitTransaction();
+    (await session).endSession();
+    return { message: "message saved successfully :)" };
+  } catch (err) {
+    (await session).abortTransaction();
+    (await session).endSession();
+    return { error: "something went wrong:(" };
   }
 };

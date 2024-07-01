@@ -1,7 +1,9 @@
 import { WebSocket } from "ws";
-import { saveMessage } from "./controller/message";
-import redis, { RedisClientType } from "redis";
+import { saveGroupMessage, saveMessage } from "./controller/message";
+import { RedisClientType, createClient } from "redis";
 import { userModel } from "./model/user";
+import mongoose from "mongoose";
+import { channel } from "diagnostics_channel";
 interface element {
   ws: WebSocket;
   email: string;
@@ -108,9 +110,11 @@ export class GroupManager {
   private static instance: GroupManager;
   public groups: Map<string, User[]>;
   private redisClient: RedisClientType;
+  private subsClient: RedisClientType;
   private constructor() {
-    this.redisClient = redis.createClient();
-    this.redisClient.connect();
+    this.redisClient = createClient();
+    this.subsClient = createClient();
+
     this.groups = new Map();
   }
   static getInstance() {
@@ -120,26 +124,73 @@ export class GroupManager {
     return this.instance;
   }
   async addUser(ws: WebSocket, email: string) {
-    const user = await userModel.findOne({ email }).populate("groups");
-    if (!user) {
-      return { message: "user not found or something wrong with the server" };
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      if (!this.subsClient.isOpen) {
+        await this.subsClient.connect();
+      }
+      const user = await userModel.findOne({ email });
+      if (!user) {
+        console.log("not found");
+        return { message: "user not found or something wrong with the server" };
+      }
+      const groups = user?.groups;
+      const ff = groups?.map(async (ele: any) => {
+        const arr = this.groups.get(ele.toString());
+        if (!arr || arr.length == 0) {
+          this.groups.set(ele.toString(), [{ ws, email }]);
+          await this.subsClient.subscribe(
+            ele.toString(),
+            this.redisCallbackHandler
+          );
+        } else {
+          arr.push({ email, ws });
+          this.groups.set(ele.toString(), arr);
+        }
+      });
+      await Promise.all(ff);
+      session.commitTransaction();
+      session.endSession();
+    } catch (err) {
+      session.abortTransaction();
+      session.endSession();
+      console.log("error while adding new user");
+      console.log(err);
     }
-    const groups = user?.groups;
-    groups?.forEach((ele: any) => {
-      this.redisClient.subscribe(ele.name, this.redisCallbackHandler);
-    });
   }
   private redisCallbackHandler = (message: string, channel: string) => {
-    const parsedMessage = JSON.parse(message);
-    console.log(parsedMessage);
+    const ff = JSON.parse(message);
     const users = this.groups.get(channel);
+    console.log(users);
     if (users && users.length) {
       users.forEach((ele) => {
-        ele.ws.send(JSON.stringify(parsedMessage));
+        if (ele.email != ff.user.email) {
+          console.log("sending message to this email: ", ele.email);
+          ele.ws.send(message);
+        }
       });
     }
   };
-  sendMessage(text: string, channel: string) {
-    this.redisClient.publish(channel, JSON.stringify({ message: text }));
+  async sendMessage(text: string, channel: string, by: string, kind: string) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      if (!this.redisClient.isOpen) {
+        await this.redisClient.connect();
+      }
+      const user = await userModel.findById(by);
+      await saveGroupMessage(text, kind, by, channel);
+      await this.redisClient.publish(
+        channel.toString(),
+        JSON.stringify({ text, user, kind })
+      );
+      session.commitTransaction();
+      session.endSession();
+    } catch (err) {
+      session.abortTransaction();
+      session.endSession();
+      console.log(`error while sending message to channel ${channel}`);
+    }
   }
 }

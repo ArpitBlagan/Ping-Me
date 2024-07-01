@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createGroup = exports.imageUpload = exports.deleteMessage = exports.getMessage = exports.saveMessage = void 0;
+exports.saveGroupMessage = exports.getGroupMessage = exports.createGroup = exports.imageUpload = exports.deleteMessage = exports.getMessage = exports.saveMessage = void 0;
 const message_1 = require("../model/message");
 const mongoose_1 = __importDefault(require("mongoose"));
 const user_1 = require("../model/user");
@@ -183,41 +183,93 @@ const createGroup = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const id = req.user.id;
     let imageUrl = "";
     const name = req.body.name;
-    const users = req.body.users;
-    console.log(name, JSON.parse(users), req.file);
-    // if (req.file) {
-    //   try {
-    //     const compressedImage = await sharp(req.file.path)
-    //       .resize(800)
-    //       .png({ quality: 80 })
-    //       .toBuffer();
-    //     await uploadToS3(compressedImage, req.file.filename);
-    //     imageUrl = `https://${process.env.NEXT_AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${req.file.filename}`;
-    //     console.log(imageUrl);
-    //     fs.unlink(req.file.path, (err) => {
-    //       if (err) {
-    //         console.log(err);
-    //         return res.status(500).json({ message: "something went wrong:(" });
-    //       }
-    //     });
-    //   } catch (err) {
-    //     console.log(err);
-    //     return res.status(500).json({ message: "something went wrong:(" });
-    //   }
-    // }
+    const users = JSON.parse(req.body.users);
+    users.push({ id });
+    const another = [];
+    users.forEach((ele) => {
+        another.push(ele.id);
+    });
+    console.log(name, req.file, users);
+    if (req.file) {
+        try {
+            const compressedImage = yield (0, sharp_1.default)(req.file.path)
+                .resize(800)
+                .png({ quality: 80 })
+                .toBuffer();
+            yield uploadToS3(compressedImage, req.file.filename);
+            imageUrl = `https://${process.env.NEXT_AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${req.file.filename}`;
+            console.log(imageUrl);
+            fs_1.default.unlink(req.file.path, (err) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json({ message: "something went wrong:(" });
+                }
+            });
+        }
+        catch (err) {
+            console.log(err);
+            return res.status(500).json({ message: "something went wrong:(" });
+        }
+    }
+    const session = mongoose_1.default.startSession();
+    (yield session).startTransaction();
     try {
-        // await groupModel.create({
-        //   name,
-        //   profileImage: imageUrl,
-        //   users: [id],
-        //   messages: [],
-        //   admin: id,
-        // });
+        const group = yield user_1.groupModel.create({
+            name,
+            profileImage: imageUrl,
+            users: another,
+            messages: [],
+            admin: id,
+        });
+        const pp = users.map((ele) => __awaiter(void 0, void 0, void 0, function* () {
+            yield user_1.userModel.findByIdAndUpdate(ele.id, {
+                $push: {
+                    groups: group._id,
+                },
+            });
+        }));
+        yield Promise.all(pp);
+        (yield session).commitTransaction();
+        (yield session).endSession();
         res.status(202).json({ message: "group created successfully" });
     }
     catch (err) {
         console.log(err);
+        (yield session).abortTransaction();
+        (yield session).endSession();
         return res.status(500).json({ message: "something went wrong:(" });
     }
 });
 exports.createGroup = createGroup;
+const getGroupMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { groupId } = req.query;
+    try {
+        const group = yield user_1.groupModel.findById(groupId).populate("messages");
+        res.status(200).json(group === null || group === void 0 ? void 0 : group.messages);
+    }
+    catch (err) {
+        res.status(500).json({ message: "something went wrong:(" });
+    }
+});
+exports.getGroupMessage = getGroupMessage;
+const saveGroupMessage = (text, kind, by, groupId) => __awaiter(void 0, void 0, void 0, function* () {
+    const session = mongoose_1.default.startSession();
+    (yield session).startTransaction();
+    try {
+        const mess = yield user_1.groupMessageModel.create({ groupId, kind, by, text });
+        yield user_1.groupModel.findByIdAndUpdate(groupId, {
+            $push: {
+                messages: mess._id,
+            },
+        });
+        (yield session).commitTransaction();
+        (yield session).endSession();
+        return { message: "message saved successfully :)" };
+    }
+    catch (err) {
+        (yield session).abortTransaction();
+        (yield session).endSession();
+        return { error: "something went wrong:(" };
+    }
+});
+exports.saveGroupMessage = saveGroupMessage;

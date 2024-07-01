@@ -23,6 +23,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const manager_1 = require("./manager");
 const route_1 = require("./route");
 const instance = manager_1.WsManager.getInstance();
+const groupInstance = manager_1.GroupManager.getInstance();
 mongoose_1.default.connect(process.env.DATABASE_URL).then(() => {
     console.log("connected");
 });
@@ -44,13 +45,22 @@ wss.on("connection", (ws, req) => {
     const email = req.url.split("=").pop();
     console.log(email);
     if (email) {
-        instance.addUser(email, ws);
-        instance.sendOnlineuser();
+        if (email[0] >= "0" || email[0] <= "9") {
+            console.log("group chat connection");
+            groupInstance.addUser(ws, email.substr(1));
+        }
+        else {
+            instance.addUser(email, ws);
+            instance.sendOnlineuser();
+        }
     }
     ws.on("message", (data) => __awaiter(void 0, void 0, void 0, function* () {
         const message = JSON.parse(data);
         if (message.type == "text") {
             instance.messageToUser(message.by, message.to, message.senderEmail, message.receiverEmail, ws, message.text, message.kind, message.uu);
+        }
+        else if (message.type == "groupText") {
+            groupInstance.sendMessage(message.text, message.channel, message.by, message.kind);
         }
     }));
     ws.on("close", () => {

@@ -35,7 +35,6 @@ const GroupDialog = ({ setRefetch }: any) => {
           `https://chat-assignment-qrb7.onrender.com/api/search?text=${searchText}`,
           { withCredentials: true }
         );
-        console.log(res.data);
         setUsers(res.data);
         setFLoading(false);
       } catch (err) {
@@ -151,7 +150,6 @@ const GroupDialog = ({ setRefetch }: any) => {
                 <label>members</label>
                 <div className="flex flex-wrap gap-2">
                   {seleUsers.map((ele, index) => {
-                    console.log(ele);
                     return (
                       <div
                         key={index}
@@ -186,7 +184,6 @@ const GroupDialog = ({ setRefetch }: any) => {
                       let present = seleUsers.find((elee) => {
                         return elee.id == ele._id;
                       });
-                      console.log(present);
                       if (ele._id != value?.info.id && !present) {
                         return (
                           <div

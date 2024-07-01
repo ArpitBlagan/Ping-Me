@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addMember = exports.searchUser = exports.getFriends = exports.addFriend = exports.register = exports.login = exports.logout = void 0;
+exports.getGroup = exports.addMember = exports.searchUser = exports.getFriends = exports.addFriend = exports.register = exports.login = exports.logout = void 0;
 const user_1 = require("../model/user");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -200,3 +200,14 @@ const addMember = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.addMember = addMember;
+const getGroup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.user.id;
+    try {
+        const user = yield user_1.userModel.findById(id).populate("groups");
+        res.status(200).json(user === null || user === void 0 ? void 0 : user.groups);
+    }
+    catch (err) {
+        res.status(500).json({ message: "something went wrong" });
+    }
+});
+exports.getGroup = getGroup;

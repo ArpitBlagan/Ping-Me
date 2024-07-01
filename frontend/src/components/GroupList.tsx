@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Triangle } from "react-loader-spinner";
 import { toast } from "react-toastify";
-const GroupList = ({ refetch }: any) => {
+const GroupList = ({ refetch, setGroup }: any) => {
   const [groups, setGroups] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -13,6 +13,7 @@ const GroupList = ({ refetch }: any) => {
           "https://chat-assignment-qrb7.onrender.com/api/group",
           { withCredentials: true }
         );
+        console.log(res.data);
         setGroups(res.data);
         setLoading(false);
       } catch (err) {
@@ -37,7 +38,19 @@ const GroupList = ({ refetch }: any) => {
           <div className="flex flex-wrap gap-3">
             {groups.map((ele) => {
               return (
-                <div className="flex items-center gap-3 justify-start border py-2 px-4 rounded-xl cursor-pointer hover:text-green-600">
+                <div
+                  key={ele._id}
+                  className="flex items-center gap-3 justify-start border py-2 px-4 rounded-xl cursor-pointer hover:text-green-600"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setGroup({
+                      id: ele._id,
+                      name: ele.name,
+                      image: ele.profileImage,
+                      members: ele.users,
+                    });
+                  }}
+                >
                   <img
                     src={ele.profileImage}
                     width={50}

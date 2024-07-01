@@ -4,7 +4,7 @@ exports.userModel = exports.groupMessageModel = exports.groupModel = void 0;
 const mongoose_1 = require("mongoose");
 const userSchema = new mongoose_1.Schema({
     name: String,
-    email: String,
+    email: { type: String, unique: true },
     password: String,
     friends: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "userModel" }],
     groups: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "groupModel" }],

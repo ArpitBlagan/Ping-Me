@@ -6,9 +6,10 @@ import dotenv from "dotenv";
 dotenv.config();
 import { WebSocketServer, WebSocket } from "ws";
 import mongoose from "mongoose";
-import { WsManager } from "./manager";
+import { GroupManager, WsManager } from "./manager";
 import { router } from "./route";
 const instance = WsManager.getInstance();
+const groupInstance = GroupManager.getInstance();
 mongoose.connect(process.env.DATABASE_URL as string).then(() => {
   console.log("connected");
 });
@@ -34,6 +35,8 @@ wss.on("connection", (ws: WebSocket, req: Request) => {
   console.log(email);
   if (email) {
     if (email[0] >= "0" || email[0] <= "9") {
+      console.log("group chat connection");
+      groupInstance.addUser(ws, email.substr(1));
     } else {
       instance.addUser(email, ws);
       instance.sendOnlineuser();
@@ -51,6 +54,13 @@ wss.on("connection", (ws: WebSocket, req: Request) => {
         message.text,
         message.kind,
         message.uu
+      );
+    } else if (message.type == "groupText") {
+      groupInstance.sendMessage(
+        message.text,
+        message.channel,
+        message.by,
+        message.kind
       );
     }
   });

@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createGroup,
   deleteMessage,
+  getGroupMessage,
   getMessage,
   imageUpload,
 } from "./controller/message";
@@ -31,6 +32,7 @@ const upload = multer({ storage, limits: { fileSize: 1000000 } });
 router.route("/login").post(login);
 router.route("/register").post(register);
 router.route("/logout").get(logout);
+router.route("/group/message").get(getGroupMessage);
 router.use(validateToken);
 router.route("/group/create").post(upload.single("file"), createGroup);
 router.route("/group").get(getGroup);

@@ -8,9 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WsManager = void 0;
+exports.GroupManager = exports.WsManager = void 0;
 const message_1 = require("./controller/message");
+const redis_1 = require("redis");
+const user_1 = require("./model/user");
+const mongoose_1 = __importDefault(require("mongoose"));
 class WsManager {
     constructor() {
         this.user = [];
@@ -94,3 +100,88 @@ class WsManager {
     }
 }
 exports.WsManager = WsManager;
+class GroupManager {
+    constructor() {
+        this.redisCallbackHandler = (message, channel) => {
+            const ff = JSON.parse(message);
+            const users = this.groups.get(channel);
+            console.log(users);
+            if (users && users.length) {
+                users.forEach((ele) => {
+                    if (ele.email != ff.user.email) {
+                        console.log("sending message to this email: ", ele.email);
+                        ele.ws.send(message);
+                    }
+                });
+            }
+        };
+        this.redisClient = (0, redis_1.createClient)();
+        this.subsClient = (0, redis_1.createClient)();
+        this.groups = new Map();
+    }
+    static getInstance() {
+        if (!this.instance) {
+            this.instance = new GroupManager();
+        }
+        return this.instance;
+    }
+    addUser(ws, email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const session = yield mongoose_1.default.startSession();
+            session.startTransaction();
+            try {
+                if (!this.subsClient.isOpen) {
+                    yield this.subsClient.connect();
+                }
+                const user = yield user_1.userModel.findOne({ email });
+                if (!user) {
+                    console.log("not found");
+                    return { message: "user not found or something wrong with the server" };
+                }
+                const groups = user === null || user === void 0 ? void 0 : user.groups;
+                const ff = groups === null || groups === void 0 ? void 0 : groups.map((ele) => __awaiter(this, void 0, void 0, function* () {
+                    const arr = this.groups.get(ele.toString());
+                    if (!arr || arr.length == 0) {
+                        this.groups.set(ele.toString(), [{ ws, email }]);
+                        yield this.subsClient.subscribe(ele.toString(), this.redisCallbackHandler);
+                    }
+                    else {
+                        arr.push({ email, ws });
+                        this.groups.set(ele.toString(), arr);
+                    }
+                }));
+                yield Promise.all(ff);
+                session.commitTransaction();
+                session.endSession();
+            }
+            catch (err) {
+                session.abortTransaction();
+                session.endSession();
+                console.log("error while adding new user");
+                console.log(err);
+            }
+        });
+    }
+    sendMessage(text, channel, by, kind) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const session = yield mongoose_1.default.startSession();
+            session.startTransaction();
+            try {
+                if (!this.redisClient.isOpen) {
+                    yield this.redisClient.connect();
+                }
+                const user = yield user_1.userModel.findById(by);
+                yield (0, message_1.saveGroupMessage)(text, kind, by, channel);
+                yield this.redisClient.publish(channel.toString(), JSON.stringify({ text, user, kind }));
+                session.commitTransaction();
+                session.endSession();
+            }
+            catch (err) {
+                session.abortTransaction();
+                session.endSession();
+                console.log(`error while sending message to channel ${channel}`);
+            }
+        });
+    }
+}
+exports.GroupManager = GroupManager;

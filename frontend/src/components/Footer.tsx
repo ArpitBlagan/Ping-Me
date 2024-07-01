@@ -2,7 +2,7 @@ import { GithubIcon, LinkedinIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 const Footer = () => {
   return (
-    <div className="flex flex-wrap gap-3 items-center justify-start  mt-2 h-[100px]">
+    <div className="flex flex-wrap gap-3 items-center justify-start  mt-4 h-[100px]">
       <div>
         <h1>Made with ❤️ By Arpit Blagan 🇮🇳</h1>
       </div>

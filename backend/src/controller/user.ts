@@ -164,7 +164,9 @@ export const addMember = async (req: Request, res: Response) => {
 export const getGroup = async (req: Request, res: Response) => {
   const id = req.user.id;
   try {
-    const user = await userModel.findById(id).populate("groups");
+    const user = await userModel
+      .findById(id)
+      .populate({ path: "groups", populate: { path: "users" } });
     res.status(200).json(user?.groups);
   } catch (err) {
     res.status(500).json({ message: "something went wrong" });
