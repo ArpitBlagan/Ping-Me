@@ -18,6 +18,7 @@ import { Input } from "./ui/input";
 import EmojiPicker from "emoji-picker-react";
 const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
   const scrollRef = useRef(null);
+  const scrollRef2 = useRef(null);
   const [loading, setLoading] = useState(false);
   const [emojiOpen, setEmojiOpne] = useState(false);
   const [preview, setPreview] = useState<null | any>(null);
@@ -28,8 +29,9 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
     const getMessage = async () => {
       setLoading(true);
       try {
+        console.log(group.id);
         const res = await axios.get(
-          `https://chat-assignment-qrb7.onrender.com/api/group/message?groupId=${group.id}`,
+          `http://ec2-52-64-189-119.ap-southeast-2.compute.amazonaws.com/api/group/message?groupId=${group.id}`,
           { withCredentials: true }
         );
         console.log("groupMessage", res.data);
@@ -45,6 +47,13 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
     }
   }, [group]);
   useEffect(() => {
+    if (scrollRef2 && scrollRef2.current) {
+      //@ts-ignore
+      scrollRef2.current?.scrollIntoView({
+        block: "end",
+        inline: "nearest",
+      });
+    }
     if (scrollRef && scrollRef.current) {
       //@ts-ignore
       scrollRef.current?.scrollIntoView({
@@ -117,7 +126,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                 {messages.length == 0 && (
                   <p className="my-2 text-center text-red-400">No Messages</p>
                 )}
-                <div ref={scrollRef} />
+                <div ref={scrollRef2} />
               </div>
               <div className="flex items-center gap-1 md:gap-3 relative">
                 <div className="absolute bottom-0 left-0">
@@ -271,6 +280,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                   send
                 </Button>
               </div>
+              <div ref={scrollRef} />
             </div>
           )}
         </div>
