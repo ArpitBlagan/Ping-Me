@@ -29,7 +29,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/group/message?groupId=${group.id}`,
+          `https://chat-assignment-qrb7.onrender.com/api/group/message?groupId=${group.id}`,
           { withCredentials: true }
         );
         console.log("groupMessage", res.data);
