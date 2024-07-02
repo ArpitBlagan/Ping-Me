@@ -4,7 +4,7 @@ import GroupDialog from "./components/GroupDialog";
 import GroupList from "./components/GroupList";
 import { Link } from "react-router-dom";
 import { contextt } from "./Contextt";
-import { toast } from "react-toastify";
+//import { toast } from "react-toastify";
 
 const Group = () => {
   const [refetch, setRefetch] = useState(false);
@@ -13,9 +13,9 @@ const Group = () => {
   const value = useContext(contextt);
   const [group, setGroup] = useState<any | null>(null);
   useEffect(() => {
-    toast.error(
-      "shifting the deployment from render to aws ec2 so this feature will not properly sorry :("
-    );
+    // toast.error(
+    //   "shifting the deployment from render to aws ec2 so this feature will not properly sorry :("
+    // );
     if (value && value.info.isloggedIn) {
       const ws = new WebSocket(
         `ws://ec2-52-64-189-119.ap-southeast-2.compute.amazonaws.com/socket?email=${
