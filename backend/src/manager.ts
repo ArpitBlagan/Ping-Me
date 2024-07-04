@@ -3,7 +3,6 @@ import { saveGroupMessage, saveMessage } from "./controller/message";
 import { RedisClientType, createClient } from "redis";
 import { userModel } from "./model/user";
 import mongoose from "mongoose";
-import { channel } from "diagnostics_channel";
 interface element {
   ws: WebSocket;
   email: string;
@@ -69,6 +68,7 @@ export class WsManager {
       console.log("saved");
       const reciverWs = this.user.find((ele) => ele.email == receiverEmail);
       if (reciverWs) {
+        console.log("cool");
         const body = JSON.stringify({
           id: res.id,
           type: "text",

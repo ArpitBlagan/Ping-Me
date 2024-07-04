@@ -45,7 +45,7 @@ wss.on("connection", (ws, req) => {
     const email = req.url.split("=").pop();
     console.log(email);
     if (email) {
-        if (email[0] >= "0" || email[0] <= "9") {
+        if (email[0] >= "0" && email[0] <= "9") {
             console.log("group chat connection");
             groupInstance.addUser(ws, email.substr(1));
         }

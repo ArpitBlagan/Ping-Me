@@ -68,6 +68,7 @@ class WsManager {
                 console.log("saved");
                 const reciverWs = this.user.find((ele) => ele.email == receiverEmail);
                 if (reciverWs) {
+                    console.log("cool");
                     const body = JSON.stringify({
                         id: res.id,
                         type: "text",
@@ -115,9 +116,7 @@ class GroupManager {
                 });
             }
         };
-        this.redisClient = (0, redis_1.createClient)({
-            url: "ws:ec2-52-64-189-119.ap-southeast-2.compute.amazonaws.com/socket",
-        });
+        this.redisClient = (0, redis_1.createClient)();
         this.subsClient = (0, redis_1.createClient)();
         this.groups = new Map();
     }

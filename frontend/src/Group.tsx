@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import GroupChat from "./components/GroupChat";
 import GroupDialog from "./components/GroupDialog";
 import GroupList from "./components/GroupList";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { contextt } from "./Contextt";
 //import { toast } from "react-toastify";
 
@@ -18,7 +18,7 @@ const Group = () => {
     // );
     if (value && value.info.isloggedIn) {
       const ws = new WebSocket(
-        `ws://ec2-52-64-189-119.ap-southeast-2.compute.amazonaws.com/socket?email=${
+        `ws://ec2-3-27-162-152.ap-southeast-2.compute.amazonaws.com/socket?email=${
           "1" + value?.info.email
         }`
       );

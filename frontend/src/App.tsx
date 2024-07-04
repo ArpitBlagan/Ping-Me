@@ -10,6 +10,7 @@ import SignUp from "./SignUp";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Group from "./Group";
+import VideoChat from "./VideoChat";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/groupchat" element={<Group />} />
+            <Route path="/videochat/:id" element={<VideoChat />} />
           </Routes>
           <hr />
           <Footer />

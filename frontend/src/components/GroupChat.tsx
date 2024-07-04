@@ -31,7 +31,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
       try {
         console.log(group.id);
         const res = await axios.get(
-          `http://ec2-52-64-189-119.ap-southeast-2.compute.amazonaws.com/api/group/message?groupId=${group.id}`,
+          `http://ec2-3-27-162-152.ap-southeast-2.compute.amazonaws.com/api/group/message?groupId=${group.id}`,
           { withCredentials: true }
         );
         console.log("groupMessage", res.data);
@@ -246,6 +246,38 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                 </Button>
                 <Button
                   className="bg-green-500"
+                  onKeyPress={(e: any) => {
+                    console.log("cool");
+                    if (e.key === "Enter") {
+                      if (message.length == 0) {
+                        return toast.error("message filed is empty :(");
+                      }
+                      const uu = uuid();
+                      const body = JSON.stringify({
+                        type: "groupText",
+                        kind: "text",
+                        text: message,
+                        by: userId,
+                        channel: group.id,
+                        uu,
+                      });
+                      socket?.send(body);
+                      setMessages((prev: any) => {
+                        return [
+                          ...prev,
+                          {
+                            by: userId,
+                            type: "groupText",
+                            kind: "text",
+                            text: message,
+                            uu,
+                          },
+                        ];
+                      });
+                      setMessage("");
+                      setEmojiOpne(false);
+                    }
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
                     if (message.length == 0) {
