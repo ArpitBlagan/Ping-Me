@@ -52,7 +52,7 @@ const Group = () => {
         <GroupDialog setRefetch={setRefetch} />
       </div>
       <div className="flex flex-col gap-3 my-5">
-        <GroupList setGroup={setGroup} refetch={refetch} />
+        <GroupList setGroup={setGroup} refetch={refetch} group={group} />
         <GroupChat
           socket={socket}
           group={group}

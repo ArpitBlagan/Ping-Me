@@ -14,6 +14,7 @@ import {
   searchUser,
   logout,
   getGroup,
+  addMembers,
 } from "./controller/user";
 import { validateToken } from "./middleware";
 import multer from "multer";
@@ -35,6 +36,7 @@ router.route("/logout").get(logout);
 router.route("/group/message").get(getGroupMessage);
 router.use(validateToken);
 router.route("/group/create").post(upload.single("file"), createGroup);
+router.route("/group/addmembers").patch(addMembers);
 router.route("/group").get(getGroup);
 router.route("/upload/file").post(upload.single("file"), imageUpload);
 router.route("/friends").get(getFriends);

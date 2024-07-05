@@ -203,14 +203,19 @@ const TextArea = () => {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                <Input
-                  className="my-4"
-                  placeholder="arpit@gmail.com"
-                  value={text}
-                  onChange={(e) => {
-                    setText(e.target.value);
-                  }}
-                />
+                <div className="flex flex-col gap-3">
+                  <label className="text-gray-600 text-center ">
+                    Search User
+                  </label>
+                  <Input
+                    className="my-4"
+                    placeholder="arpit@gmail.com or arpit"
+                    value={text}
+                    onChange={(e) => {
+                      setText(e.target.value);
+                    }}
+                  />
+                </div>
               </DialogTitle>
               <DialogDescription>
                 <div className="overflow-hidden overflow-y-scroll flex flex-col gap-3">

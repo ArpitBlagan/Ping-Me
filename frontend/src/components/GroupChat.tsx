@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import pingme from "@/img/pingme.png";
 import { toast } from "react-toastify";
-import { EllipsisVertical, Laugh, Paperclip, Video, X } from "lucide-react";
+import { CircleX, Laugh, Paperclip, Video, X } from "lucide-react";
 import axios from "axios";
 import { Triangle } from "react-loader-spinner";
 import uuid from "react-uuid";
@@ -13,10 +13,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@radix-ui/react-dialog";
+import { contextt } from "@/Contextt";
 import { DialogHeader } from "./ui/dialog";
 import { Input } from "./ui/input";
 import EmojiPicker from "emoji-picker-react";
 const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
+  const value = useContext(contextt);
   const scrollRef = useRef(null);
   const scrollRef2 = useRef(null);
   const [loading, setLoading] = useState(false);
@@ -25,6 +27,33 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
   const [file, setFile] = useState<null | any>(null);
   const [fileDia, setFileDia] = useState(false);
   const [message, setMessage] = useState("");
+  const [seleUsers, setSeleUsers] = useState<any[]>([]);
+  const [searchText, setSearchText] = useState("");
+  const [fLoading, setFLoading] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const getFriends = async () => {
+      setFLoading(true);
+      try {
+        const res = await axios.get(
+          `https://chat-assignment-qrb7.onrender.com/api/search?text=${searchText}`,
+          { withCredentials: true }
+        );
+        setUsers(res.data);
+        setFLoading(false);
+      } catch (err) {
+        toast.error("Not able to fetch the users data :(");
+        setFLoading(false);
+      }
+    };
+    let time = setTimeout(() => {
+      getFriends();
+    }, 2000);
+    return () => {
+      clearTimeout(time);
+    };
+  }, [searchText]);
   useEffect(() => {
     const getMessage = async () => {
       setLoading(true);
@@ -62,12 +91,35 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
       });
     }
   }, [messages]);
+  const handleAdd = async () => {
+    if (seleUsers.length == 0) {
+      toast.error("no new member is there to add :(");
+    }
+    try {
+      const body = {
+        users: seleUsers,
+        groupId: group.id,
+      };
+      await axios.patch(
+        "https://chat-assignment-qrb7.onrender.com/api/group/addmembers",
+        body,
+        {
+          withCredentials: true,
+        }
+      );
+      toast.success("new members added to the group successfully :)");
+    } catch (err) {
+      toast.error(
+        "something went wrong while adding new members to the group :("
+      );
+    }
+  };
   return (
     <div>
       {group ? (
         <div>
           <div>
-            <div className="border py-2 px-4 rounded-xl flex flex-col gap-2">
+            <div className="border py-2 px-4 rounded-xl flex flex-col gap-2 relative">
               <div className=" flex  justify-end gap-2 items-center">
                 <img
                   src={group.image}
@@ -76,9 +128,21 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                   className="rounded-full"
                 />
                 <p className="text-2xl">{group.name}</p>
-                <EllipsisVertical />
               </div>
               <div className="flex items-center gap-3 justify-end">
+                <div className="flex-1 flex flex-wrap items-center gap-2">
+                  <p className="text-gray-600">Members</p>
+                  {group.members.map((ele: any) => {
+                    return (
+                      <p
+                        className="text-sm text-gray-600 hover:text-green-600"
+                        key={ele._id}
+                      >
+                        {ele.name}({ele.email})
+                      </p>
+                    );
+                  })}
+                </div>
                 <a href={`/videochat/${group.id}`} target="_blank">
                   <Video
                     className="cursor-pointer hover:text-green-600"
@@ -86,6 +150,122 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                     width={30}
                   />
                 </a>
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger asChild>
+                    <p className="cursor-pointer text-center">Add Member</p>
+                  </DialogTrigger>
+                  <DialogContent className="absolute top-0 w-full py-2 px-3 border rounded-xl bg-gray-800">
+                    <DialogHeader>
+                      <DialogTitle>
+                        <div className="flex items-center justify-between border py-2 px-4">
+                          <p>Add Member</p>
+                          <CircleX
+                            className="cursor-pointer"
+                            onClick={() => {
+                              setOpen(false);
+                            }}
+                          />
+                        </div>
+                      </DialogTitle>
+                      <DialogDescription>
+                        <div className="flex flex-col gap-3">
+                          <label>Search User</label>
+                          <Input
+                            placeholder="Arpit"
+                            value={searchText}
+                            onChange={(e) => {
+                              setSearchText(e.target.value);
+                            }}
+                          />
+                          <label>New Members</label>
+                          <div className="flex flex-wrap gap-2">
+                            {seleUsers.map((ele, index) => {
+                              return (
+                                <div
+                                  key={index}
+                                  className="relative py-2 px-8 bg-gray-600 rounded-xl flex justify-start"
+                                >
+                                  <p>{ele.name}</p>
+                                  <CircleX
+                                    className="absolute top-1.5 right-1 cursor-pointer"
+                                    onClick={() => {
+                                      let arr = seleUsers;
+                                      let newArr = arr.filter((elee) => {
+                                        return elee.id != ele.id;
+                                      });
+                                      setSeleUsers(newArr);
+                                    }}
+                                  />
+                                </div>
+                              );
+                            })}
+                          </div>
+                          <p>Result</p>
+                          {fLoading ? (
+                            <div className="flex items-center justify-center">
+                              <Triangle />
+                            </div>
+                          ) : (
+                            <div className="flex flex-col gap-2">
+                              {users.map((ele, index) => {
+                                let present = seleUsers.find((elee) => {
+                                  return elee.id == ele._id;
+                                });
+                                let pp = group.members.find((eleee: any) => {
+                                  return eleee._id == ele._id;
+                                });
+                                if (
+                                  ele._id != value?.info.id &&
+                                  !present &&
+                                  !pp
+                                ) {
+                                  return (
+                                    <div
+                                      className="flex items-center justify-around border rounded-xl py-2 px-4"
+                                      key={index}
+                                    >
+                                      <p>{ele.name}</p>
+                                      <p>{ele.email}</p>
+                                      <Button
+                                        onClick={async (e) => {
+                                          e.preventDefault();
+                                          setSeleUsers((prev) => {
+                                            return [
+                                              ...prev,
+                                              {
+                                                id: ele._id,
+                                                name: ele.name,
+                                              },
+                                            ];
+                                          });
+                                        }}
+                                        variant={"outline"}
+                                      >
+                                        Add
+                                      </Button>
+                                    </div>
+                                  );
+                                }
+                              })}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-center">
+                          <Button
+                            className="bg-green-600 mt-3 w-1/2"
+                            disabled={loading}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleAdd();
+                            }}
+                          >
+                            {loading ? "Adding..." : "Add"}
+                          </Button>
+                        </div>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
             <div>

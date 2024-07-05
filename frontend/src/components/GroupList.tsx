@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Triangle } from "react-loader-spinner";
 import { toast } from "react-toastify";
-const GroupList = ({ refetch, setGroup }: any) => {
+const GroupList = ({ refetch, setGroup, group }: any) => {
   const [groups, setGroups] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -40,7 +40,8 @@ const GroupList = ({ refetch, setGroup }: any) => {
               return (
                 <div
                   key={ele._id}
-                  className="flex items-center gap-3 justify-start border py-2 px-4 rounded-xl cursor-pointer hover:text-green-600"
+                  className={`flex items-center gap-3 justify-start border py-2 px-4 rounded-xl cursor-pointer hover:text-green-600
+                    ${group && group.id == ele._id ? "bg-green-500" : ""}`}
                   onClick={(e) => {
                     e.preventDefault();
                     setGroup({

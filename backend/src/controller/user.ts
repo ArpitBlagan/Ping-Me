@@ -136,19 +136,23 @@ export const searchUser = async (req: Request, res: Response) => {
   }
 };
 
-export const addMember = async (req: Request, res: Response) => {
-  const { userId, groupId } = req.body;
+export const addMembers = async (req: Request, res: Response) => {
+  const { users, groupId } = req.body;
+  const userId = req.user.id;
   const session = mongoose.startSession();
   (await session).startTransaction();
   try {
-    const group = await groupModel.findByIdAndUpdate(groupId, {
-      $push: {
-        users: userId,
-      },
+    const uu = users.map(async (ele: any) => {
+      await groupModel.findByIdAndUpdate(groupId, {
+        $push: {
+          users: ele.id,
+        },
+      });
     });
+    Promise.all(uu);
     await userModel.findByIdAndUpdate(userId, {
       $push: {
-        groups: group?._id,
+        groups: groupId,
       },
     });
     (await session).commitTransaction();
