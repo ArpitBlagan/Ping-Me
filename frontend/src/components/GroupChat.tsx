@@ -31,7 +31,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
       try {
         console.log(group.id);
         const res = await axios.get(
-          `https://chat-assignment-qrb7.onrender.com?/api/group/message?groupId=${group.id}`,
+          `https://chat-assignment-qrb7.onrender.com/api/group/message?groupId=${group.id}`,
           { withCredentials: true }
         );
         console.log("groupMessage", res.data);
