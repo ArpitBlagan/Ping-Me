@@ -384,12 +384,13 @@ const VideoChat = () => {
     }
   }, [videoParams, audioParams, socket, rtp, Device]);
   useEffect(() => {
-    const sock = io("http://localhost:9000");
+    //start local stream
+    getLocalStream();
+    const sock = io("https://chat-assignment-1-video.onrender.com");
     setSocket(sock);
     sock.on("successful-connection", async ({ socketId }) => {
       console.log(socketId, "id", id);
-      //start local stream
-      getLocalStream();
+
       //ask for rtpCapabilites of the room's router
       sock.emit("join-room", { roomName: id }, (data: any) => {
         console.log(data);
@@ -414,8 +415,8 @@ const VideoChat = () => {
       )}
       <div className="grid gap-2 md:grid-cols-3" id="conference">
         <div className="py-2 px-3 bg-gray-800 rounded-xl">
-          <video ref={localVideo} className="rounded-xl blur"></video>
-          <p className="text-white">You</p>
+          <video ref={localVideo} className="rounded-xl"></video>
+          <p className=" text-center">You</p>
         </div>
       </div>
       <div className="relative" id="audio"></div>
@@ -428,7 +429,7 @@ const VideoChat = () => {
                 width={30}
                 className="hover:text-red-500  cursor-pointer"
                 onClick={() => {
-                  navigate("/groupchat", { state: { reload: true } });
+                  navigate("/thankyou", { state: { reload: true } });
                 }}
               />
             </HoverCardTrigger>

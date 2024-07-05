@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import pingme from "@/img/pingme.png";
 import { toast } from "react-toastify";
-import { EllipsisVertical, Laugh, Paperclip, X } from "lucide-react";
+import { EllipsisVertical, Laugh, Paperclip, Video, X } from "lucide-react";
 import axios from "axios";
 import { Triangle } from "react-loader-spinner";
 import uuid from "react-uuid";
@@ -67,15 +67,26 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
       {group ? (
         <div>
           <div>
-            <div className=" flex border py-2 px-4 rounded-xl justify-end gap-2 items-center">
-              <img
-                src={group.image}
-                width={50}
-                height={50}
-                className="rounded-full"
-              />
-              <p className="text-2xl">{group.name}</p>
-              <EllipsisVertical />
+            <div className="border py-2 px-4 rounded-xl flex flex-col gap-2">
+              <div className=" flex  justify-end gap-2 items-center">
+                <img
+                  src={group.image}
+                  width={50}
+                  height={50}
+                  className="rounded-full"
+                />
+                <p className="text-2xl">{group.name}</p>
+                <EllipsisVertical />
+              </div>
+              <div className="flex items-center gap-3 justify-end">
+                <a href={`/videochat/${group.id}`} target="_blank">
+                  <Video
+                    className="cursor-pointer hover:text-green-600"
+                    height={30}
+                    width={30}
+                  />
+                </a>
+              </div>
             </div>
             <div>
               {group.members.map((ele: any) => {

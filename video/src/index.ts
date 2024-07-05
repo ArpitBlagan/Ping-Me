@@ -9,7 +9,10 @@ dotenv.config();
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "http://localhost:5173",
+      "https://chat-assignment-lyart.vercel.app",
+    ],
     credentials: true,
   })
 );
@@ -69,7 +72,10 @@ const mediaCodecs: any = [
 ];
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: [
+      "http://localhost:5173",
+      "https://chat-assignment-lyart.vercel.app",
+    ],
     credentials: true,
   },
 });

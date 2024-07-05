@@ -3,6 +3,7 @@ import { saveGroupMessage, saveMessage } from "./controller/message";
 import { RedisClientType, createClient } from "redis";
 import { userModel } from "./model/user";
 import mongoose from "mongoose";
+import { channel } from "diagnostics_channel";
 interface element {
   ws: WebSocket;
   email: string;
@@ -109,11 +110,11 @@ interface User {
 export class GroupManager {
   private static instance: GroupManager;
   public groups: Map<string, User[]>;
-  private redisClient: RedisClientType;
-  private subsClient: RedisClientType;
+  // private redisClient: RedisClientType;
+  // private subsClient: RedisClientType;
   private constructor() {
-    this.redisClient = createClient();
-    this.subsClient = createClient();
+    // this.redisClient = createClient();
+    // this.subsClient = createClient();
 
     this.groups = new Map();
   }
@@ -127,9 +128,9 @@ export class GroupManager {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-      if (!this.subsClient.isOpen) {
-        await this.subsClient.connect();
-      }
+      // if (!this.subsClient.isOpen) {
+      //   await this.subsClient.connect();
+      // }
       const user = await userModel.findOne({ email });
       if (!user) {
         console.log("not found");
@@ -138,15 +139,11 @@ export class GroupManager {
       const groups = user?.groups;
       const ff = groups?.map(async (ele: any) => {
         const arr = this.groups.get(ele.toString());
-        if (!arr || arr.length == 0) {
-          this.groups.set(ele.toString(), [{ ws, email }]);
-          await this.subsClient.subscribe(
-            ele.toString(),
-            this.redisCallbackHandler
-          );
-        } else {
-          arr.push({ email, ws });
+        if (arr && arr.length) {
+          arr.push({ ws, email });
           this.groups.set(ele.toString(), arr);
+        } else {
+          this.groups.set(ele.toString, [{ ws, email }]);
         }
       });
       await Promise.all(ff);
@@ -176,15 +173,21 @@ export class GroupManager {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-      if (!this.redisClient.isOpen) {
-        await this.redisClient.connect();
-      }
+      // if (!this.redisClient.isOpen) {
+      //   await this.redisClient.connect();
+      // }
       const user = await userModel.findById(by);
       await saveGroupMessage(text, kind, by, channel);
-      await this.redisClient.publish(
-        channel.toString(),
-        JSON.stringify({ text, user, kind })
-      );
+      // await this.redisClient.publish(
+      //   channel.toString(),
+      //   JSON.stringify({ text, user, kind })
+      // );
+      const arr = this.groups.get(channel);
+      if (arr && arr.length) {
+        arr.forEach((ele) => {
+          ele.ws.send(JSON.stringify({ text, user, kind }));
+        });
+      }
       session.commitTransaction();
       session.endSession();
     } catch (err) {

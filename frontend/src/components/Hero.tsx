@@ -30,7 +30,7 @@ const Hero = () => {
   return (
     <div className="flex flex-col justify-around items-center my-2 ">
       <div className="flex flex-col items-center justify-center min-h-[70dvh] gap-3">
-        <p className="text-[20px] md:text-[50px] text-center">
+        <p className="text-[30px] md:text-[50px] text-center">
           Stay connected with ease and style
           <br />
           using our intuitive texting-app 🚀.
@@ -44,16 +44,19 @@ const Hero = () => {
         {value?.info.isloggedIn && (
           <Link
             to="/chat"
-            className=" py-2 px-4 mt-2  text-center border  rounded-xl  hover:bg-violet-400 transition duration-300 ease-in-out"
+            className=" py-2 px-4 mt-2  text-center border  rounded-xl hover:bg-green-600  dark:hover:bg-violet-600 transition duration-300 ease-in-out"
           >
             Text-Area
           </Link>
         )}
-        <p className="w-8/13 text-center text-[15px] text-xl">
+        <p className="w-8/13 text-center text-[20px] md:text-md text-xl">
           The application leverages the{" "}
           <span className="text-red-500">ws library</span> to enable WebSocket
-          communication, providing users with a seamless and instant messaging
-          experience.
+          communication,
+          <br />
+          providing users with a seamless and instant messaging experience and
+          <br /> <span className="text-red-500">mediasoup</span> sfu for video
+          calling feature.
         </p>
         <div className="flex flex-col items-center justify-center">
           <a
