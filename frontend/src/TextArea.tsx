@@ -47,7 +47,9 @@ const TextArea = () => {
     console.log(value?.info);
     let sock: WebSocket;
     if (value?.info.email) {
-      sock = new WebSocket(`ws://localhost:8000?email=${value?.info.email}`);
+      sock = new WebSocket(
+        `wss://chat-assignment-qrb7.onrender.com?email=${value?.info.email}`
+      );
       setSocket(sock);
       sock.onmessage = (event) => {
         const message = JSON.parse(event.data);
