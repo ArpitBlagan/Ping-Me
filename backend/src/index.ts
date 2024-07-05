@@ -38,6 +38,7 @@ wss.on("connection", (ws: WebSocket, req: Request) => {
       console.log("group chat connection");
       groupInstance.addUser(ws, email.substr(1));
     } else {
+      console.log("one-on-one chat connection");
       instance.addUser(email, ws);
       instance.sendOnlineuser();
     }

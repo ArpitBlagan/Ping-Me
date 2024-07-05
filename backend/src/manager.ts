@@ -137,16 +137,16 @@ export class GroupManager {
         return { message: "user not found or something wrong with the server" };
       }
       const groups = user?.groups;
-      const ff = groups?.map(async (ele: any) => {
+      groups?.map(async (ele: any) => {
         const arr = this.groups.get(ele.toString());
+        console.log("if the array already exist or not", arr);
         if (arr && arr.length) {
           arr.push({ ws, email });
           this.groups.set(ele.toString(), arr);
         } else {
-          this.groups.set(ele.toString, [{ ws, email }]);
+          this.groups.set(ele.toString(), [{ ws, email }]);
         }
       });
-      await Promise.all(ff);
       session.commitTransaction();
       session.endSession();
     } catch (err) {
@@ -182,6 +182,7 @@ export class GroupManager {
       //   channel.toString(),
       //   JSON.stringify({ text, user, kind })
       // );
+      console.log("message got saved");
       const arr = this.groups.get(channel);
       if (arr && arr.length) {
         arr.forEach((ele) => {
