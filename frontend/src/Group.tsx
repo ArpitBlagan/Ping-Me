@@ -18,7 +18,7 @@ const Group = () => {
     // );
     if (value && value.info.isloggedIn) {
       const ws = new WebSocket(
-        `ws://ec2-3-27-162-152.ap-southeast-2.compute.amazonaws.com/socket?email=${
+        `wss://chat-assignment-qrb7.onrender.com?/socket?email=${
           "1" + value?.info.email
         }`
       );
