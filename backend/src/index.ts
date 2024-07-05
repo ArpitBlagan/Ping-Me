@@ -58,6 +58,7 @@ wss.on("connection", (ws: WebSocket, req: Request) => {
       );
     } else if (message.type == "groupText") {
       groupInstance.sendMessage(
+        ws,
         message.text,
         message.channel,
         message.by,

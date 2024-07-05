@@ -169,7 +169,13 @@ export class GroupManager {
       });
     }
   };
-  async sendMessage(text: string, channel: string, by: string, kind: string) {
+  async sendMessage(
+    ws: WebSocket,
+    text: string,
+    channel: string,
+    by: string,
+    kind: string
+  ) {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
@@ -186,7 +192,9 @@ export class GroupManager {
       const arr = this.groups.get(channel);
       if (arr && arr.length) {
         arr.forEach((ele) => {
-          ele.ws.send(JSON.stringify({ text, user, kind }));
+          if (ele.ws != ws) {
+            ele.ws.send(JSON.stringify({ text, user, kind }));
+          }
         });
       }
       session.commitTransaction();
