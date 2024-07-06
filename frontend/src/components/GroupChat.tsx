@@ -94,7 +94,9 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
   const handleAdd = async () => {
     if (seleUsers.length == 0) {
       toast.error("no new member is there to add :(");
+      return;
     }
+    setLoading(true);
     try {
       const body = {
         users: seleUsers,
@@ -108,7 +110,9 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
         }
       );
       toast.success("new members added to the group successfully :)");
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       toast.error(
         "something went wrong while adding new members to the group :("
       );
@@ -154,10 +158,10 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                   <DialogTrigger asChild>
                     <p className="cursor-pointer text-center">Add Member</p>
                   </DialogTrigger>
-                  <DialogContent className="absolute top-0 w-full py-2 px-3 border rounded-xl bg-gray-800">
+                  <DialogContent className="absolute top-0 w-full py-2 px-3 border rounded-xl bg-gray-500 dark:bg-gray-800">
                     <DialogHeader>
                       <DialogTitle>
-                        <div className="flex items-center justify-between border py-2 px-4">
+                        <div className="flex items-center justify-between  py-2 px-4">
                           <p>Add Member</p>
                           <CircleX
                             className="cursor-pointer"
@@ -221,7 +225,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                                 ) {
                                   return (
                                     <div
-                                      className="flex items-center justify-around border rounded-xl py-2 px-4"
+                                      className="flex items-center justify-around py-2 px-4"
                                       key={index}
                                     >
                                       <p>{ele.name}</p>

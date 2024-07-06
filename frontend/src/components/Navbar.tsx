@@ -13,19 +13,21 @@ import { contextt } from "@/Contextt";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { MessageCircleMore } from "lucide-react";
 const Navbar = () => {
   const navigate = useNavigate();
   const value = useContext(contextt);
   console.log(value);
   return (
     <div className="flex items-center border border-gray-600 rounded-xl py-2 px-4">
-      <div className="flex-1 text-md md:text-[26px]  ">
+      <div className="flex-1 flex gap-3 items-center text-md md:text-[26px]  ">
         <Link
           to="/"
           className="hover:underline transition duration-300 ease-in-out"
         >
-          Ping Me
+          <p>Ping Me</p>
         </Link>
+        <MessageCircleMore className="hover:text-red-600 cursor-pointer" />
       </div>
       <div className="flex items-center justify-end gap-5">
         {value?.info.isloggedIn ? (
