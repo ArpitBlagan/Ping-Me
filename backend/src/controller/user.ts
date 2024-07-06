@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import * as z from "zod";
 import mongoose from "mongoose";
+import { populate } from "dotenv";
 const registerSchema = z.object({
   name: z.string(),
   email: z.string().email(""),
@@ -172,6 +173,19 @@ export const getGroup = async (req: Request, res: Response) => {
       .findById(id)
       .populate({ path: "groups", populate: { path: "users" } });
     res.status(200).json(user?.groups);
+  } catch (err) {
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
+
+export const userInfo = async (req: Request, res: Response) => {
+  const id = req.user.id;
+  try {
+    const user = await userModel
+      .findById(id)
+      .populate({ path: "friends", populate: { path: "users" } })
+      .populate({ path: "groups", populate: { path: "users" } });
+    res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ message: "something went wrong" });
   }

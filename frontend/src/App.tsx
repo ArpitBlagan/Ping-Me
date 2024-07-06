@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Group from "./Group";
 import VideoChat from "./VideoChat";
 import Thankyou from "./Thankyou";
+import Profile from "./Profile";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/groupchat" element={<Group />} />
             <Route path="/videochat/:id" element={<VideoChat />} />
             <Route path="/thankyou" element={<Thankyou />} />
+            <Route path="/profile/:id" element={<Profile />} />
           </Routes>
 
           <hr />
