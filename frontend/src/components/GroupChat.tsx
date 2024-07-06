@@ -111,8 +111,10 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
       );
       toast.success("new members added to the group successfully :)");
       setLoading(false);
+      setOpen(false);
     } catch (err) {
       setLoading(false);
+      setOpen(false);
       toast.error(
         "something went wrong while adding new members to the group :("
       );

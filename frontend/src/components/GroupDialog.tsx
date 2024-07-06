@@ -169,7 +169,7 @@ const GroupDialog = ({ setRefetch }: any) => {
                       </div>
                     );
                   })}
-                  <p className="bg-gray-600 py-2 px-4 rounded-xl">
+                  <p className="dark:bg-gray-600 py-2 px-4 rounded-xl">
                     {seleUsers.length == 0 ? "Only you" : "You"}
                   </p>
                 </div>
