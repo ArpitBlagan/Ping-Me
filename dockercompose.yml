@@ -1,0 +1,27 @@
+version: "3.5"
+services:
+  frontend:
+    build: ./frontend
+    container_name: zest
+    ports: -5173
+  backend:
+    build: ./backend
+    container_name: back
+    ports: -8000
+    environment:
+      - PORT=8000
+      - SECRET=@31da123dsf
+      - DATABASE_URL=mongodb://admin:password@localhost:27017
+  db:
+    image: mongo
+    container_name: db
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+  volumes:
+    mongo-data:
