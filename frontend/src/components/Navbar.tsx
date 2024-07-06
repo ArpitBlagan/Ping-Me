@@ -19,7 +19,7 @@ const Navbar = () => {
   console.log(value);
   return (
     <div className="flex items-center border border-gray-600 rounded-xl py-2 px-4">
-      <div className="flex-1 text-[26px]  ">
+      <div className="flex-1 text-md md:text-[26px]  ">
         <Link
           to="/"
           className="hover:underline transition duration-300 ease-in-out"
@@ -70,7 +70,7 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center text-sm">
             <Link to="/signin">SignUp</Link>
             <Link to="/signup">SignIn</Link>
           </div>
