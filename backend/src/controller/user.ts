@@ -151,11 +151,14 @@ export const addMembers = async (req: Request, res: Response) => {
       });
     });
     Promise.all(uu);
-    await userModel.findByIdAndUpdate(userId, {
-      $push: {
-        groups: groupId,
-      },
+    const uuu = users.map(async (ele: any) => {
+      await userModel.findByIdAndUpdate(ele.id, {
+        $push: {
+          groups: groupId,
+        },
+      });
     });
+    Promise.all(uuu);
     (await session).commitTransaction();
     (await session).endSession();
     res.status(202).json({ message: "member added to the group successfully" });
