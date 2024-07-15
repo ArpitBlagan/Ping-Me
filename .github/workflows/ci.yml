@@ -16,8 +16,8 @@ jobs:
 
       - name: install dependencies on frontend
         uses: pnpm install --legacy-peer-deps
-        working-directory: ./frontend
+        path: ./frontend
 
       - name: format frontend
         uses: pnpm run format:check
-        working-directory: ./frontend
+        path: ./frontend
