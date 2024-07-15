@@ -11,7 +11,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { ThreeDots } from "react-loader-spinner";
-let params = {
+const params = {
   // mediasoup params
   encodings: [
     {
@@ -82,7 +82,7 @@ const VideoChat = () => {
   };
   const createDevice = async (rtpCapabilities: any) => {
     try {
-      let device = new mediasoupclient.Device();
+      const device = new mediasoupclient.Device();
 
       // https://mediasoup.org/documentation/v3/mediasoup-client/api/#device-load
       // Loads the device with RTP capabilities of the Router (server side)
@@ -120,7 +120,7 @@ const VideoChat = () => {
         // creates a new WebRTC Transport to send media
         // based on the server's producer transport params
         // https://mediasoup.org/documentation/v3/mediasoup-client/api/#TransportOptions
-        let producerTransport = Device.createSendTransport(params);
+        const producerTransport = Device.createSendTransport(params);
 
         // https://mediasoup.org/documentation/v3/communication-between-client-and-server/#producing-media
         // this event is raised when a first call to transport.produce() is made
@@ -142,7 +142,7 @@ const VideoChat = () => {
             } catch (error) {
               errback(error);
             }
-          }
+          },
         );
         //@ts-ignore
         producerTransport.on(
@@ -174,16 +174,16 @@ const VideoChat = () => {
                     console.log("producer exists");
                     getProducers();
                   }
-                }
+                },
               );
             } catch (error) {
               errback(error);
             }
-          }
+          },
         );
 
         connectSendTransport(producerTransport);
-      }
+      },
     );
   };
   const connectSendTransport = async (producerTransport: any) => {
@@ -192,8 +192,8 @@ const VideoChat = () => {
     // https://mediasoup.org/documentation/v3/mediasoup-client/api/#transport-produce
     // this action will trigger the 'connect' and 'produce' events above
     console.log("audioparams", audioParams, "videparama", videoParams);
-    let videoProducer = await producerTransport.produce(videoParams);
-    let audioProducer = await producerTransport.produce(audioParams);
+    const videoProducer = await producerTransport.produce(videoParams);
+    const audioProducer = await producerTransport.produce(audioParams);
 
     audioProducer.on("trackended", () => {
       console.log("audio track ended");
@@ -221,7 +221,7 @@ const VideoChat = () => {
   };
   const signalNewConsumerTransport = async (remoteProducerId: any) => {
     //check if we are already consuming the remoteProducerId
-    let cons = consumers;
+    const cons = consumers;
     if (cons.includes(remoteProducerId)) return;
     cons.push(remoteProducerId);
     setConsumers(cons);
@@ -266,17 +266,17 @@ const VideoChat = () => {
               // Tell the transport that something was wrong
               errback(error);
             }
-          }
+          },
         );
 
         connectRecvTransport(consumerTransport, remoteProducerId, params.id);
-      }
+      },
     );
   };
   const connectRecvTransport = async (
     consumerTransport: any,
     remoteProducerId: any,
-    serverConsumerTransportId: any
+    serverConsumerTransportId: any,
   ) => {
     // for consumer, we need to tell the server first
     // to create a consumer based on the rtpCapabilities and consume
@@ -316,7 +316,7 @@ const VideoChat = () => {
 
         // create a new div element for the new consumer media
 
-        let newElem = document.createElement("div");
+        const newElem = document.createElement("div");
 
         newElem.setAttribute("id", `td-${remoteProducerId}`);
 
@@ -330,7 +330,7 @@ const VideoChat = () => {
           newElem.innerHTML = `<audio id="${remoteProducerId}" autoplay className="absolute top-0 left-0 h-[1px] w-[1px]"></audio>`;
           audioDiv?.appendChild(newElem);
           const mediaElement = newElem.querySelector(
-            "audio"
+            "audio",
           ) as HTMLMediaElement;
           if (mediaElement) {
             mediaElement.srcObject = new MediaStream([track]);
@@ -344,7 +344,7 @@ const VideoChat = () => {
           newElem.innerHTML = `<video id="${remoteProducerId}"className="rounded-xl bg-gray"></video>`;
           videoDiv?.append(newElem);
           const mediaElement = newElem.querySelector(
-            "video"
+            "video",
           ) as HTMLMediaElement;
           if (mediaElement) {
             mediaElement.srcObject = new MediaStream([track]);
@@ -357,7 +357,7 @@ const VideoChat = () => {
         socket.emit("consumer-resume", {
           serverConsumerId: params.serverConsumerId,
         });
-      }
+      },
     );
   };
   const getProducers = () => {
@@ -386,7 +386,8 @@ const VideoChat = () => {
   useEffect(() => {
     //start local stream
     getLocalStream();
-    const sock = io("https://chat-assignment-1-video.onrender.com");
+    //https://chat-assignment-1-video.onrender.com
+    const sock = io("http://localhost:9000");
     setSocket(sock);
     sock.on("successful-connection", async ({ socketId }) => {
       console.log(socketId, "id", id);

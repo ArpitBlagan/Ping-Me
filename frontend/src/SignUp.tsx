@@ -39,7 +39,7 @@ const SignIn = () => {
         body,
         {
           withCredentials: true,
-        }
+        },
       );
       console.log(res.data);
       value?.setInfo({

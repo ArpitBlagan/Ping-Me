@@ -38,7 +38,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
       try {
         const res = await axios.get(
           `https://chat-assignment-qrb7.onrender.com/api/search?text=${searchText}`,
-          { withCredentials: true }
+          { withCredentials: true },
         );
         setUsers(res.data);
         setFLoading(false);
@@ -47,7 +47,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
         setFLoading(false);
       }
     };
-    let time = setTimeout(() => {
+    const time = setTimeout(() => {
       getFriends();
     }, 2000);
     return () => {
@@ -61,7 +61,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
         console.log(group.id);
         const res = await axios.get(
           `https://chat-assignment-qrb7.onrender.com/api/group/message?groupId=${group.id}`,
-          { withCredentials: true }
+          { withCredentials: true },
         );
         console.log("groupMessage", res.data);
         setLoading(false);
@@ -107,7 +107,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
         body,
         {
           withCredentials: true,
-        }
+        },
       );
       toast.success("new members added to the group successfully :)");
       setLoading(false);
@@ -116,7 +116,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
       setLoading(false);
       setOpen(false);
       toast.error(
-        "something went wrong while adding new members to the group :("
+        "something went wrong while adding new members to the group :(",
       );
     }
   };
@@ -195,8 +195,8 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                                   <CircleX
                                     className="absolute top-1.5 right-1 cursor-pointer"
                                     onClick={() => {
-                                      let arr = seleUsers;
-                                      let newArr = arr.filter((elee) => {
+                                      const arr = seleUsers;
+                                      const newArr = arr.filter((elee) => {
                                         return elee.id != ele.id;
                                       });
                                       setSeleUsers(newArr);
@@ -214,10 +214,10 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                           ) : (
                             <div className="flex flex-col gap-2">
                               {users.map((ele, index) => {
-                                let present = seleUsers.find((elee) => {
+                                const present = seleUsers.find((elee) => {
                                   return elee.id == ele._id;
                                 });
-                                let pp = group.members.find((eleee: any) => {
+                                const pp = group.members.find((eleee: any) => {
                                   return eleee._id == ele._id;
                                 });
                                 if (
@@ -390,7 +390,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                                 const res = await axios.post(
                                   "https://chat-assignment-qrb7.onrender.com/api/upload/file",
                                   formdata,
-                                  { withCredentials: true }
+                                  { withCredentials: true },
                                 );
                                 console.log("image url", res.data);
                                 toast("now sending");
@@ -420,7 +420,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                                 setFileDia(false);
                               } catch (err) {
                                 toast.error(
-                                  "something went wrong while uploading the file"
+                                  "something went wrong while uploading the file",
                                 );
                               }
                             }}

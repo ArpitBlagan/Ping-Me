@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "lint:check": "eslint . ",
+    "preview": "vite preview",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json}\"",
+    "lint:fix": "eslint . --fix",
+    "format:fix": "prettier --write \"**/*.{ts,tsx,json}\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
@@ -23,6 +26,8 @@
     "emoji-picker-react": "^4.10.0",
     "lucide-react": "^0.395.0",
     "mediasoup-client": "^3.7.12",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.5",
     "react": "^18.2.0",
     "react-chat-elements": "^12.0.14",
     "react-dom": "^18.2.0",

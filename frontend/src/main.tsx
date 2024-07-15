@@ -5,5 +5,5 @@ import Contextt from "./Contextt.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Contextt>
     <App />
-  </Contextt>
+  </Contextt>,
 );

@@ -39,7 +39,7 @@ const SignUp = () => {
         body,
         {
           withCredentials: true,
-        }
+        },
       );
       console.log(res.data);
       toast.success("Signined up successfully");

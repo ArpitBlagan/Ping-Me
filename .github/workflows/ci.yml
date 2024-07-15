@@ -1,0 +1,26 @@
+name: Linting and formatting on PR
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  lintAndFormat:
+    name: performs linting and formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout the repo
+        uses:  actions/@checkout@v3
+
+      - name: install dependencies on frontend
+        uses: pnpm install --legacy-peer-deps
+        working-directory: ./frontend
+      - name: lint frontend
+        user: pnpm run lint:check
+        working-directory: ./frotend
+      -name: format frontend
+        user: pnpm run format:check
+        working-directory: ./frontend
+    

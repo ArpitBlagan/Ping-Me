@@ -27,7 +27,7 @@ const Contextt = ({ children }: { children: React.ReactNode }) => {
           "https://chat-assignment-qrb7.onrender.com/api/isloggedin",
           {
             withCredentials: true,
-          }
+          },
         );
         setInfo({
           isloggedIn: true,

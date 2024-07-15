@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc && node dist/index.js"
+    "dev": "tsc && node dist/index.js",
+    "lint": "eslint .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "",

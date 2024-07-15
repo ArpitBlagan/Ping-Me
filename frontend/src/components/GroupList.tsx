@@ -11,7 +11,7 @@ const GroupList = ({ refetch, setGroup, group }: any) => {
       try {
         const res = await axios.get(
           "https://chat-assignment-qrb7.onrender.com/api/group",
-          { withCredentials: true }
+          { withCredentials: true },
         );
         console.log(res.data);
         setGroups(res.data);

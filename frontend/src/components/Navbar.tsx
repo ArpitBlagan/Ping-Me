@@ -23,11 +23,11 @@ const Navbar = () => {
       <div className="flex-1 flex gap-3 items-center text-md md:text-[26px]  ">
         <Link
           to="/"
-          className="hover:underline transition duration-300 ease-in-out"
+          className="hover:underline transition duration-300 ease-in-out md:block hidden "
         >
           <p>Ping Me</p>
         </Link>
-        <MessageCircleMore className="hover:text-red-600 cursor-pointer" />
+        <MessageCircleMore className="text-red-600 cursor-pointer w-30 h-30" />
       </div>
       <div className="flex items-center justify-end gap-5">
         {value?.info.isloggedIn ? (
@@ -51,7 +51,7 @@ const Navbar = () => {
                     try {
                       const res = await axios.get(
                         "https://chat-assignment-qrb7.onrender.com/api/logout",
-                        { withCredentials: true }
+                        { withCredentials: true },
                       );
                       console.log(res.data);
                       value.setInfo({

@@ -48,7 +48,7 @@ const TextArea = () => {
     let sock: WebSocket;
     if (value?.info.email) {
       sock = new WebSocket(
-        `wss://chat-assignment-qrb7.onrender.com?email=${value?.info.email}`
+        `wss://chat-assignment-qrb7.onrender.com?email=${value?.info.email}`,
       );
       setSocket(sock);
       sock.onmessage = (event) => {
@@ -126,7 +126,7 @@ const TextArea = () => {
           `https://chat-assignment-qrb7.onrender.com/api/conversation?to=${sele.id}`,
           {
             withCredentials: true,
-          }
+          },
         );
         console.log(res.data);
         setConv(res.data.messages);
@@ -150,7 +150,7 @@ const TextArea = () => {
           "https://chat-assignment-qrb7.onrender.com/api/friends",
           {
             withCredentials: true,
-          }
+          },
         );
         console.log(res.data);
         setFriends(res.data.friends);
@@ -171,7 +171,7 @@ const TextArea = () => {
           `https://chat-assignment-qrb7.onrender.com/api/search?text=${text}`,
           {
             withCredentials: true,
-          }
+          },
         );
         setList(res.data);
         setSearchL(false);
@@ -180,7 +180,7 @@ const TextArea = () => {
       }
     };
     console.log("text changed");
-    let tt = setTimeout(() => {
+    const tt = setTimeout(() => {
       getRes();
     }, 1000);
     return () => {
@@ -225,7 +225,7 @@ const TextArea = () => {
                     </div>
                   ) : (
                     list.map((ele: any, index: any) => {
-                      let ok = friends.find((elee: any) => {
+                      const ok = friends.find((elee: any) => {
                         return ele.email == elee.email;
                       });
                       //@ts-ignore
@@ -248,10 +248,10 @@ const TextArea = () => {
                                   await axios.patch(
                                     "https://chat-assignment-qrb7.onrender.com/api/addFriend",
                                     body,
-                                    { withCredentials: true }
+                                    { withCredentials: true },
                                   );
                                   toast.success(
-                                    "friend added successfully :) !"
+                                    "friend added successfully :) !",
                                   );
                                   setRefetch(!refetch);
                                   setAddL(false);
@@ -429,7 +429,7 @@ const TextArea = () => {
                                 const res = await axios.post(
                                   "https://chat-assignment-qrb7.onrender.com/api/upload/file",
                                   formdata,
-                                  { withCredentials: true }
+                                  { withCredentials: true },
                                 );
                                 console.log("image url", res.data);
                                 toast("now sending");
@@ -460,7 +460,7 @@ const TextArea = () => {
                                 setFileDia(false);
                               } catch (err) {
                                 toast.error(
-                                  "something went wrong while uploading the file"
+                                  "something went wrong while uploading the file",
                                 );
                               }
                             }}
@@ -667,7 +667,7 @@ const TextArea = () => {
                                 const res = await axios.post(
                                   "https://chat-assignment-qrb7.onrender.com/api/upload/file",
                                   formdata,
-                                  { withCredentials: true }
+                                  { withCredentials: true },
                                 );
                                 const uu = uuid();
                                 const body = JSON.stringify({
@@ -696,7 +696,7 @@ const TextArea = () => {
                                 setFileDia(false);
                               } catch (err) {
                                 toast.error(
-                                  "something went wrong while uploading the file"
+                                  "something went wrong while uploading the file",
                                 );
                               }
                             }}

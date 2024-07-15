@@ -20,7 +20,7 @@ const Group = () => {
       const ws = new WebSocket(
         `wss://chat-assignment-qrb7.onrender.com?/socket?email=${
           "1" + value?.info.email
-        }`
+        }`,
       );
       setSocket(ws);
       ws.addEventListener("message", (event) => {

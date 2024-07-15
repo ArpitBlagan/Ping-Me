@@ -33,7 +33,7 @@ const GroupDialog = ({ setRefetch }: any) => {
       try {
         const res = await axios.get(
           `https://chat-assignment-qrb7.onrender.com/api/search?text=${searchText}`,
-          { withCredentials: true }
+          { withCredentials: true },
         );
         setUsers(res.data);
         setFLoading(false);
@@ -42,7 +42,7 @@ const GroupDialog = ({ setRefetch }: any) => {
         setFLoading(false);
       }
     };
-    let time = setTimeout(() => {
+    const time = setTimeout(() => {
       getFriends();
     }, 2000);
     return () => {
@@ -65,7 +65,7 @@ const GroupDialog = ({ setRefetch }: any) => {
         formdata,
         {
           withCredentials: true,
-        }
+        },
       );
       toast.success("Group Created Successfully :)");
       setLoading(false);
@@ -159,8 +159,8 @@ const GroupDialog = ({ setRefetch }: any) => {
                         <CircleX
                           className="absolute top-1.5 right-1 cursor-pointer"
                           onClick={() => {
-                            let arr = seleUsers;
-                            let newArr = arr.filter((elee) => {
+                            const arr = seleUsers;
+                            const newArr = arr.filter((elee) => {
                               return elee.id != ele.id;
                             });
                             setSeleUsers(newArr);
@@ -181,7 +181,7 @@ const GroupDialog = ({ setRefetch }: any) => {
                 ) : (
                   <div className="flex flex-col gap-2">
                     {users.map((ele, index) => {
-                      let present = seleUsers.find((elee) => {
+                      const present = seleUsers.find((elee) => {
                         return elee.id == ele._id;
                       });
                       if (ele._id != value?.info.id && !present) {
