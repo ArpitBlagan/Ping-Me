@@ -13,6 +13,14 @@ jobs:
     steps:
       - name: checkout the repo
         uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          
+      - name: install pnpm
+        run: npm install -g pnpm
+        working-directory: ./frontend
 
       - name: install dependencies on frontend
         run: pnpm install --legacy-peer-deps
