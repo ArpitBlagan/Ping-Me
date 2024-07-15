@@ -19,5 +19,5 @@ jobs:
         working-directory: ./frontend
 
       - name: format frontend
-        user: pnpm run format:check
+        uses: pnpm run format:check
         working-directory: ./frontend
