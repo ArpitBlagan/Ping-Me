@@ -23,7 +23,7 @@ jobs:
         working-directory: ./frontend
 
       - name: install dependencies on frontend
-        run: pnpm install --legacy-peer-deps
+        run: pnpm install
         working-directory: ./frontend
 
       - name: format frontend
