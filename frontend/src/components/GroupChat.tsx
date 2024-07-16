@@ -149,7 +149,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                     );
                   })}
                 </div>
-                <a href={`/videochat/${group.id}`} target="_blank">
+                <a href={`/videochat/${group.id}`} target="_blank" rel="noreferrer">
                   <Video
                     className="cursor-pointer hover:text-green-600"
                     height={30}

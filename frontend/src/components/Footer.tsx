@@ -7,14 +7,14 @@ const Footer = () => {
         <h1>Made with ❤️ By Arpit Blagan 🇮🇳</h1>
       </div>
       <div>
-        <a href="https://github.com/ArpitBlagan" target="_blank">
+        <a href="https://github.com/ArpitBlagan" target="_blank" rel="noreferrer">
           <GithubIcon width={50} height={30} />
         </a>
       </div>
       <div>
         <a
           href="https://www.linkedin.com/in/arpit-blagan-79081b193/"
-          target="_blank"
+          target="_blank" rel="noreferrer"
         >
           <LinkedinIcon width={50} height={30} />
         </a>

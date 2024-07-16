@@ -61,7 +61,7 @@ const Hero = () => {
         <div className="flex flex-col items-center justify-center">
           <a
             href="https://github.com/ArpitBlagan/chat-assignment"
-            target="_blank"
+            target="_blank" rel="noreferrer"
           >
             <GithubIcon
               width={50}
