@@ -23,14 +23,25 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_SECRET }}
 
-      - name: build and push the image
+      - name: build and push the image for backend
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: ./backend
           file: ./backend/Dockerfile
           push: true
           tags: arpitblagan27/githubcd:latest
 
-      - name: check it pushed or not
+      - name: build and push the image for frontend
+        uses: docker/build-push-action@v3
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: arpitblagan27/frontendcd:latest
+
+      - name: check it is pushed or not for backend
         run: docker pull arpitblagan27/githubcd:latest
+
+      - name: check it is pushed or not for frontend
+        run: docker pull arpitblagan27/frontendcd:latest
 ## Don't cram just try to understand
