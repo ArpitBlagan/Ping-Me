@@ -24,6 +24,7 @@
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.1.5",
     "emoji-picker-react": "^4.10.0",
+    "husky": "^9.0.11",
     "lucide-react": "^0.395.0",
     "mediasoup-client": "^3.7.12",
     "prettier": "^3.3.3",
