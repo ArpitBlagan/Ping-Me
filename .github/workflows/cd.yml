@@ -26,8 +26,8 @@ jobs:
       - name: build and push the image
         uses: docker/build-push-action@v3
         with:
-          context: ./backend
-          file: ./Dockerfile
+          context: .
+          file: ./backend/Dockerfile
           push: true
           tags: arpitblagan27/githubcd:latest
 
