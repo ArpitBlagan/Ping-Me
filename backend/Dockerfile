@@ -1,6 +1,8 @@
-FROM node:19.5.0-alpine
+FROM node:20-alpine
 
-WORKDIR /user/src/app
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
 
 COPY package*.json ./
 
