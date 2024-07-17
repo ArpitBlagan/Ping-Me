@@ -49,9 +49,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            sudo docker pull arpitblagan27/githubcd:latest
+            sudo docker pull arpitblagan27/frontendcd:latest
             sudo docker stop web-app || true
             sudo docker rm web-app || true
-            sudo docker run -d --name web-app -p 5173:5173 arpitblagan27/githubcd:latest
+            sudo docker run -d --name web-app -p 5173:5173 arpitblagan27/frontendcd:latest
 
 ## Don't cram just try to understand
