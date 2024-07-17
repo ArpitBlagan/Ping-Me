@@ -41,4 +41,17 @@ jobs:
 
       - name: check it is pushed or not for frontend
         run: docker pull arpitblagan27/frontendcd:latest
+
+      - name: deploy on ec2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            sudo docker pull arpitblagan27/githubcd:latest
+            sudo docker stop web-app || true
+            sudo docker rm web-app || true
+            sudo docker run -d --name web-app -p 5173:5173 arpitblagan27/githubcd:latest
+
 ## Don't cram just try to understand
