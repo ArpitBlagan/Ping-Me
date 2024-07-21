@@ -142,7 +142,7 @@ const VideoChat = () => {
             } catch (error) {
               errback(error);
             }
-          },
+          }
         );
         //@ts-ignore
         producerTransport.on(
@@ -174,16 +174,16 @@ const VideoChat = () => {
                     console.log("producer exists");
                     getProducers();
                   }
-                },
+                }
               );
             } catch (error) {
               errback(error);
             }
-          },
+          }
         );
 
         connectSendTransport(producerTransport);
-      },
+      }
     );
   };
   const connectSendTransport = async (producerTransport: any) => {
@@ -266,17 +266,17 @@ const VideoChat = () => {
               // Tell the transport that something was wrong
               errback(error);
             }
-          },
+          }
         );
 
         connectRecvTransport(consumerTransport, remoteProducerId, params.id);
-      },
+      }
     );
   };
   const connectRecvTransport = async (
     consumerTransport: any,
     remoteProducerId: any,
-    serverConsumerTransportId: any,
+    serverConsumerTransportId: any
   ) => {
     // for consumer, we need to tell the server first
     // to create a consumer based on the rtpCapabilities and consume
@@ -330,7 +330,7 @@ const VideoChat = () => {
           newElem.innerHTML = `<audio id="${remoteProducerId}" autoplay className="absolute top-0 left-0 h-[1px] w-[1px]"></audio>`;
           audioDiv?.appendChild(newElem);
           const mediaElement = newElem.querySelector(
-            "audio",
+            "audio"
           ) as HTMLMediaElement;
           if (mediaElement) {
             mediaElement.srcObject = new MediaStream([track]);
@@ -344,7 +344,7 @@ const VideoChat = () => {
           newElem.innerHTML = `<video id="${remoteProducerId}"className="rounded-xl bg-gray"></video>`;
           videoDiv?.append(newElem);
           const mediaElement = newElem.querySelector(
-            "video",
+            "video"
           ) as HTMLMediaElement;
           if (mediaElement) {
             mediaElement.srcObject = new MediaStream([track]);
@@ -357,7 +357,7 @@ const VideoChat = () => {
         socket.emit("consumer-resume", {
           serverConsumerId: params.serverConsumerId,
         });
-      },
+      }
     );
   };
   const getProducers = () => {
@@ -387,7 +387,7 @@ const VideoChat = () => {
     //start local stream
     getLocalStream();
     //https://chat-assignment-1-video.onrender.com
-    const sock = io("http://localhost:9000");
+    const sock = io("https://chat-assignment-1-video.onrender.com");
     setSocket(sock);
     sock.on("successful-connection", async ({ socketId }) => {
       console.log(socketId, "id", id);
