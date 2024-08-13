@@ -15,4 +15,4 @@ password: 123456
 
 ##### \* group chat feature I try to use redis pubsub but it makes more sense when we have more than one instance of the server (when we need to scale it for user).
 
-##### \* video call feature using media soup sfu (selective forwarding unit).
+##### \* video call feature using media soup sfu (selective forwarding unit) coming soon.
