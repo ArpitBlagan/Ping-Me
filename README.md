@@ -4,6 +4,11 @@
 
 > MERN + Typescript + WS + Mediasoup(SFU) + Shadcn/ui + AWS-S3.
 
+##### If don't want to login here is credentials for demo
+ ```bash
+email: arpit@gmail.com
+password: 123456
+```
 ### Features:
 
 ##### \* one-on-one chat feature.
