@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useContext } from "react";
 import pingme from "@/img/pingme.png";
 import { toast } from "react-toastify";
-import { CircleX, Laugh, Paperclip, Video, X } from "lucide-react";
+import { CircleX, Laugh, Paperclip, X } from "lucide-react";
 import axios from "axios";
 import { Triangle } from "react-loader-spinner";
 import uuid from "react-uuid";
