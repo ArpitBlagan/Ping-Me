@@ -38,7 +38,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
       try {
         const res = await axios.get(
           `https://chat-assignment-qrb7.onrender.com/api/search?text=${searchText}`,
-          { withCredentials: true },
+          { withCredentials: true }
         );
         setUsers(res.data);
         setFLoading(false);
@@ -61,7 +61,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
         console.log(group.id);
         const res = await axios.get(
           `https://chat-assignment-qrb7.onrender.com/api/group/message?groupId=${group.id}`,
-          { withCredentials: true },
+          { withCredentials: true }
         );
         console.log("groupMessage", res.data);
         setLoading(false);
@@ -107,7 +107,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
         body,
         {
           withCredentials: true,
-        },
+        }
       );
       toast.success("new members added to the group successfully :)");
       setLoading(false);
@@ -116,7 +116,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
       setLoading(false);
       setOpen(false);
       toast.error(
-        "something went wrong while adding new members to the group :(",
+        "something went wrong while adding new members to the group :("
       );
     }
   };
@@ -149,13 +149,13 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                     );
                   })}
                 </div>
-                <a href={`/videochat/${group.id}`} target="_blank" rel="noreferrer">
+                {/* <a href={`/videochat/${group.id}`} target="_blank" rel="noreferrer">
                   <Video
                     className="cursor-pointer hover:text-green-600"
                     height={30}
                     width={30}
                   />
-                </a>
+                </a> */}
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
                     <p className="cursor-pointer text-center">Add Member</p>
@@ -390,7 +390,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                                 const res = await axios.post(
                                   "https://chat-assignment-qrb7.onrender.com/api/upload/file",
                                   formdata,
-                                  { withCredentials: true },
+                                  { withCredentials: true }
                                 );
                                 console.log("image url", res.data);
                                 toast("now sending");
@@ -420,7 +420,7 @@ const GroupChat = ({ socket, group, userId, messages, setMessages }: any) => {
                                 setFileDia(false);
                               } catch (err) {
                                 toast.error(
-                                  "something went wrong while uploading the file",
+                                  "something went wrong while uploading the file"
                                 );
                               }
                             }}
