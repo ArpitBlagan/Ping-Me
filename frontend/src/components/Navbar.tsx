@@ -13,21 +13,21 @@ import { contextt } from "@/Contextt";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { MessageCircleMore } from "lucide-react";
+import { RiChatSmileFill } from "@remixicon/react";
 const Navbar = () => {
   const navigate = useNavigate();
   const value = useContext(contextt);
   console.log(value);
   return (
-    <div className="flex items-center border border-gray-600 rounded-xl py-2 px-4">
+    <div className="flex items-center border border-gray-600 rounded-xl py-6 px-4">
       <div className="flex-1 flex gap-3 items-center text-md md:text-[26px]  ">
         <Link
           to="/"
           className="hover:underline transition duration-300 ease-in-out md:block hidden "
         >
-          <p>Ping Me</p>
+          <p className="font-bold text-2xl">Ping Me</p>
         </Link>
-        <MessageCircleMore className="text-red-600 cursor-pointer w-30 h-30" />
+        <RiChatSmileFill className=" cursor-pointer w-30 h-30" />
       </div>
       <div className="flex items-center justify-end gap-5">
         {value?.info.isloggedIn ? (
@@ -51,7 +51,7 @@ const Navbar = () => {
                     try {
                       const res = await axios.get(
                         "https://chat-assignment-qrb7.onrender.com/api/logout",
-                        { withCredentials: true },
+                        { withCredentials: true }
                       );
                       console.log(res.data);
                       value.setInfo({
@@ -73,8 +73,18 @@ const Navbar = () => {
           </DropdownMenu>
         ) : (
           <div className="flex gap-4 items-center text-sm">
-            <Link to="/signin">SignUp</Link>
-            <Link to="/signup">SignIn</Link>
+            <Link
+              to="/signin"
+              className="hover:underline duration-300 ease-in-out"
+            >
+              SignUp
+            </Link>
+            <Link
+              to="/signup"
+              className="hover:underline duration-300 ease-in-out"
+            >
+              SignIn
+            </Link>
           </div>
         )}
         <ModeToggle />
