@@ -34,7 +34,7 @@ const Hero = () => {
   return (
     <div className="flex flex-col justify-around items-center my-2 ">
       <div
-        className={`flex flex-col rounded-md mb-10 items-center w-full justify-center min-h-[90dvh] gap-3 `}
+        className={`flex relative flex-col rounded-md mb-10 items-center w-full justify-center min-h-[90dvh] gap-3 `}
       >
         <BackgroundLines className="flex items-center justify-center w-full flex-col px-4">
           <p className="text-[30px] md:text-[50px] font-bold text-center">

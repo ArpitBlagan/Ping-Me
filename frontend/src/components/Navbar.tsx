@@ -19,7 +19,7 @@ const Navbar = () => {
   const value = useContext(contextt);
   console.log(value);
   return (
-    <div className="flex items-center border border-gray-600 rounded-xl py-6 px-4">
+    <div className="flex items-center border border-gray-600 rounded-xl py-6 px-4 ">
       <div className="flex-1 flex gap-3 items-center text-md md:text-[26px]  ">
         <Link
           to="/"
