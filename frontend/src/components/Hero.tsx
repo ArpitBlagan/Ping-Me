@@ -7,6 +7,8 @@ import {
   RiGithubFill,
   RiMegaphoneFill,
 } from "@remixicon/react";
+import { BackgroundLines } from "@/components/ui/background-lines";
+import { HoverBorderGradient } from "@/components/ui/hover-background";
 const features = [
   {
     title: "Fast and Seamless",
@@ -31,48 +33,56 @@ const Hero = () => {
   const value = useContext(contextt);
   return (
     <div className="flex flex-col justify-around items-center my-2 ">
-      <div className="flex flex-col items-center justify-center min-h-[90dvh] gap-3">
-        <p className="text-[30px] md:text-[50px] font-bold text-center">
-          Stay connected with ease and style
-          <br />
-          using PingMe 🚀.
-          <br />
-          <span className="bg-gradient-to-r font-md from-gray-600 via-purple-500 to-red-400 inline-block text-transparent bg-clip-text">
-            your ultimate solution for seamless,
+      <div
+        className={`flex flex-col rounded-md mb-10 items-center w-full justify-center min-h-[90dvh] gap-3 `}
+      >
+        <BackgroundLines className="flex items-center justify-center w-full flex-col px-4">
+          <p className="text-[30px] md:text-[50px] font-bold text-center">
+            Stay connected with ease and style
             <br />
-            instant communication.
-          </span>
-        </p>
-        {value?.info.isloggedIn && (
-          <Link
-            to="/chat"
-            className=" py-2 px-4 mt-2  text-center border  rounded-xl hover:bg-green-600  dark:hover:bg-violet-600 transition duration-300 ease-in-out"
-          >
-            Text-Area
-          </Link>
-        )}
-        <p className="w-8/13 text-center text-[20px] md:text-md text-lg text-gray-700">
-          The application leverages the ws library to enable WebSocket
-          communication,
-          <br />
-          providing users with a seamless and instant messaging experience and
-          more
-        </p>
-        <div className="">
-          <a
-            href="https://github.com/ArpitBlagan/chat-assignment"
-            target="_blank"
-            rel="noreferrer"
-            className="flex flex-col items-center justify-center hover:bg-slate-500 duration-300 ease-in-out py-2 px-6 rounded-xl"
-          >
-            <RiGithubFill className=" rounded-xl py-1" size={40} />
-            <p className="flex items-center">
-              <span>Give a </span> ⭐️
-            </p>
-          </a>
-        </div>
-      </div>
+            using PingMe 🚀.
+            <br />
+            <span className="bg-gradient-to-r font-md from-gray-600 via-purple-500 to-red-400 inline-block text-transparent bg-clip-text">
+              your ultimate solution for seamless,
+              <br />
+              instant communication.
+            </span>
+          </p>
+          {value?.info.isloggedIn && (
+            <Link
+              to="/chat"
+              className=" py-2 px-4 mt-2  text-center border  rounded-xl hover:bg-green-600  dark:hover:bg-violet-600 transition duration-300 ease-in-out"
+            >
+              Text-Area
+            </Link>
+          )}
+          <p className="w-8/13 text-center text-[20px] md:text-md text-lg text-gray-700">
+            The application leverages the ws library to enable WebSocket
+            communication,
+            <br />
+            providing users with a seamless and instant messaging experience and
+            more
+          </p>
 
+          <div className="mt-10">
+            <HoverBorderGradient
+              containerClassName="rounded-full"
+              as="button"
+              className="dark:bg-black bg-white text-black dark:text-white flex items-center "
+            >
+              <a
+                href="https://github.com/ArpitBlagan/chat-assignment"
+                target="_blank"
+                rel="noreferrer"
+                className="flex  items-center justify-center t py-2 px-6 rounded-xl"
+              >
+                Star us on{" "}
+                <RiGithubFill className=" rounded-xl py-1" size={30} />
+              </a>
+            </HoverBorderGradient>
+          </div>
+        </BackgroundLines>
+      </div>
       <div className="flex flex-col gap-5 items-center justify-center min-h-[40vh] mb-10">
         <p className="text-5xl text-bold text-gray-700">Features</p>
         <div className="grid md:grid-cols-3 gap-3">
