@@ -9,6 +9,7 @@ import {
 } from "@remixicon/react";
 import { BackgroundLines } from "@/components/ui/background-lines";
 import { HoverBorderGradient } from "@/components/ui/hover-background";
+import { motion } from "framer-motion";
 const features = [
   {
     title: "Fast and Seamless",
@@ -48,6 +49,7 @@ const Hero = () => {
               instant communication.
             </span>
           </p>
+
           {value?.info.isloggedIn && (
             <Link
               to="/chat"
@@ -64,33 +66,43 @@ const Hero = () => {
             more
           </p>
 
-          <div className="mt-10">
-            <HoverBorderGradient
-              containerClassName="rounded-full"
-              as="button"
-              className="dark:bg-black bg-white text-black dark:text-white flex items-center "
-            >
+          <div className="mt-10 flex items-center gap-4">
+            <HoverBorderGradient className="dark:bg-black bg-white text-black dark:text-white flex items-center ">
               <a
                 href="https://github.com/ArpitBlagan/chat-assignment"
                 target="_blank"
                 rel="noreferrer"
                 className="flex  items-center justify-center t py-2 px-6 rounded-xl"
               >
-                Star us on{" "}
-                <RiGithubFill className=" rounded-xl py-1" size={30} />
+                Star us on <RiGithubFill className=" rounded-xl ml-1" />
+              </a>
+            </HoverBorderGradient>
+            <HoverBorderGradient
+              containerClassName="rounded-full"
+              as="button"
+              className="dark:bg-black bg-white text-black dark:text-white flex items-center "
+            >
+              <a
+                href="https://refnet.arpitblagan.com"
+                target="_blank"
+                rel="noreferrer"
+                className="flex  items-center justify-center t py-2 px-6 rounded-xl"
+              >
+                Checkout out Refnet (in testing phase)
               </a>
             </HoverBorderGradient>
           </div>
         </BackgroundLines>
       </div>
       <div className="flex flex-col gap-5 items-center justify-center min-h-[40vh] mb-10">
-        <p className="text-5xl text-bold text-gray-700">Features</p>
+        <p className="text-3xl text-semibold text-gray-700">Features</p>
         <div className="grid md:grid-cols-3 gap-3">
           {features.map((ele, index) => {
             return (
-              <div
+              <motion.div
+                whileHover={{ scale: 1.02 }}
                 key={index}
-                className="flex flex-col items-center justify-center gap-3 border shadow-lg rounded-xl py-3 px-4"
+                className="cursor-pointer flex flex-col items-center justify-center gap-3 border shadow-lg rounded-xl py-3 px-4"
               >
                 <div className="flex flex-col gap-3 items-center justify-start">
                   {ele.icon}
@@ -99,11 +111,12 @@ const Hero = () => {
                 <p className="text-gray-700 text-md text-center">
                   {ele.description}
                 </p>
-              </div>
+              </motion.div>
             );
           })}
         </div>
       </div>
+
       <div className="min-h-[60dvh] flex flex-col items-center gap-5 justify-center">
         <p className="text-gray-700 font-bold text-5xl">Demo</p>
         <iframe
