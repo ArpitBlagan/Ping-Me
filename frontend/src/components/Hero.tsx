@@ -38,7 +38,7 @@ const Hero = () => {
         className={`flex relative flex-col rounded-md mb-10 items-center w-full justify-center min-h-[90dvh] gap-3 `}
       >
         <BackgroundLines className="flex items-center justify-center w-full flex-col px-4">
-          <p className="text-[30px] md:text-[50px] font-bold text-center">
+          <p className="text-[20px] md:text-[50px] font-bold text-center">
             Stay connected with ease and style
             <br />
             using PingMe 🚀.
@@ -58,7 +58,7 @@ const Hero = () => {
               Text-Area
             </Link>
           )}
-          <p className="w-8/13 text-center text-[20px] md:text-md text-lg text-gray-700">
+          <p className="w-8/13 text-center text-[14px] md:text-xl  text-gray-700">
             The application leverages the ws library to enable WebSocket
             communication,
             <br />
@@ -74,7 +74,7 @@ const Hero = () => {
                 rel="noreferrer"
                 className="flex  items-center justify-center t py-2 px-6 rounded-xl"
               >
-                Star us on <RiGithubFill className=" rounded-xl ml-1" />
+                <RiGithubFill className=" rounded-xl ml-1" />
               </a>
             </HoverBorderGradient>
             <HoverBorderGradient
@@ -83,12 +83,12 @@ const Hero = () => {
               className="dark:bg-black bg-white text-black dark:text-white flex items-center "
             >
               <a
-                href="https://refnet.arpitblagan.com"
+                href="https://refnet-sepia.vercel.app/"
                 target="_blank"
                 rel="noreferrer"
                 className="flex  items-center justify-center t py-2 px-6 rounded-xl"
               >
-                Checkout out Refnet (in testing phase)
+                Refnet
               </a>
             </HoverBorderGradient>
           </div>
@@ -106,7 +106,7 @@ const Hero = () => {
               >
                 <div className="flex flex-col gap-3 items-center justify-start">
                   {ele.icon}
-                  <p className="font-semibold text-3xl">{ele.title}</p>
+                  <p className="font-semibold md:text-3xl">{ele.title}</p>
                 </div>
                 <p className="text-gray-700 text-md text-center">
                   {ele.description}
